@@ -2,13 +2,20 @@ cmake_minimum_required(VERSION 2.8)
 
 project(euler)
 
+# Find Eigen
+list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}")
+find_package(Eigen3 REQUIRED)
+
 # Library
 set(SOURCES
     src/io.cpp
     src/conversions.cpp
     )
 add_library(euler_conversions ${SOURCES})
-target_include_directories(euler_conversions PUBLIC include)
+target_include_directories(euler_conversions PUBLIC 
+    include
+    ${EIGEN3_INCLUDE_DIR}
+    )
 
 # Application
 add_executable(euler apps/euler.cpp)
