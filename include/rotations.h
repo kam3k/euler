@@ -1,5 +1,5 @@
-#ifndef EULER_ROTATION_MATRIX_H
-#define EULER_ROTATION_MATRIX_H
+#ifndef EULER_ROTATIONS_H
+#define EULER_ROTATIONS_H
 
 #include <array>
 #include <string>

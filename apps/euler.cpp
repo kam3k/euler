@@ -1,5 +1,5 @@
 #include <iostream>
-#include <rotation_matrix.h>
+#include <rotations.h>
 
 int main()
 {

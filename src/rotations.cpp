@@ -1,4 +1,4 @@
-#include <rotation_matrix.h>
+#include <rotations.h>
 #include <internal/principal_rotations.h>
 
 namespace euler

@@ -9,7 +9,7 @@ find_package(Eigen3 REQUIRED)
 # Library
 set(SOURCES
     src/io.cpp
-    src/rotation_matrix.cpp
+    src/rotations.cpp
     src/internal/principal_rotations.cpp
     )
 add_library(euler_rotations ${SOURCES})
@@ -27,7 +27,7 @@ enable_testing()
 set(TEST_SOURCES 
     test/catch/catch_main.cpp
     test/test_io.cpp
-    test/test_rotation_matrix.cpp
+    test/test_rotations.cpp
     test/internal/test_principal_rotations.cpp
     )
 add_executable(run_all_tests ${TEST_SOURCES})
