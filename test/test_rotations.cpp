@@ -1,5 +1,5 @@
 #include <catch/catch.hpp>
-#include <rotations.h>
+#include <euler/rotations.h>
 #include <cmath>
 
 using namespace euler;

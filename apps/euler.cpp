@@ -1,6 +1,6 @@
 #include <iostream>
-#include <io.h>
-#include <rotations.h>
+#include <euler/io.h>
+#include <euler/rotations.h>
 
 int main()
 {
