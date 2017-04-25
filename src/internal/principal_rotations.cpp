@@ -56,7 +56,13 @@ namespace euler
           R = Rz(angle);
           break;
       }
-      return intrinsic ? R : R.transpose();
+
+      if (!intrinsic)
+      {
+        R.transposeInPlace();
+      }
+
+      return R;
     }
   } // namespace internal
 } // namespace euler
