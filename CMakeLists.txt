@@ -2,6 +2,9 @@ cmake_minimum_required(VERSION 2.8)
 
 project(euler)
 
+# use C++11
+set(CMAKE_CXX_FLAGS "-std=c++11")
+
 # Find Eigen
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}")
 find_package(Eigen3 REQUIRED)
