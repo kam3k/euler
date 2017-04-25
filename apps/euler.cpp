@@ -1,9 +1,12 @@
 #include <iostream>
+#include <io.h>
 #include <rotations.h>
 
 int main()
 {
-  Eigen::Matrix3d R = euler::rotationMatrix("xyz", {0, 0, M_PI/2}, true, true);
+  euler::RotationMatrix R = euler::getRotationMatrix("xyz", {0, 0, M_PI/2}, true, true);
   std::cout << R << "\n";
+  euler::Quaternion q = euler::getQuaternion(R);
+  std::cout << q << "\n";
   return 0;
 }
