@@ -4,13 +4,23 @@
 namespace euler
 {
   Eigen::Matrix3d rotationMatrix(const Sequence& sequence, const Angles& angles,
-                                 bool use_extrinsic /* = false */)
+                                 bool use_extrinsic, bool use_active)
   {
     assert(sequence.size() == 3);
     assert(angles.size() == 3);
 
-    return internal::Rprincipal(sequence[2], angles[2], use_extrinsic) *
-           internal::Rprincipal(sequence[1], angles[1], use_extrinsic) *
-           internal::Rprincipal(sequence[0], angles[0], use_extrinsic);
+    if (use_extrinsic)
+    {
+      return internal::R_principal(sequence[2], angles[2], use_active) *
+             internal::R_principal(sequence[1], angles[1], use_active) *
+             internal::R_principal(sequence[0], angles[0], use_active);
+    }
+    else // intrinsic
+    {
+      return internal::R_principal(sequence[0], angles[0], use_active) *
+             internal::R_principal(sequence[1], angles[1], use_active) *
+             internal::R_principal(sequence[2], angles[2], use_active);
+    }
+
   }
 }  // namespace euler

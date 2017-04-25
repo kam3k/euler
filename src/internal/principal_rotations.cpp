@@ -6,7 +6,7 @@ namespace euler
 {
   namespace internal
   {
-    Eigen::Matrix3d Rx(double angle)
+    Eigen::Matrix3d R_x_passive(double angle)
     {
       Eigen::Matrix3d ret;
       const auto c = std::cos(angle);
@@ -17,7 +17,7 @@ namespace euler
       return ret;
     }
 
-    Eigen::Matrix3d Ry(double angle)
+    Eigen::Matrix3d R_y_passive(double angle)
     {
       Eigen::Matrix3d ret;
       const auto c = std::cos(angle);
@@ -28,7 +28,7 @@ namespace euler
       return ret;
     }
 
-    Eigen::Matrix3d Rz(double angle)
+    Eigen::Matrix3d R_z_passive(double angle)
     {
       Eigen::Matrix3d ret;
       const auto c = std::cos(angle);
@@ -39,7 +39,7 @@ namespace euler
       return ret;
     }
 
-    Eigen::Matrix3d Rprincipal(char axis, double angle, bool use_extrinsic)
+    Eigen::Matrix3d R_principal(char axis, double angle, bool use_active)
     {
       assert(axis == 'x' || axis == 'y' || axis == 'z');
 
@@ -47,17 +47,17 @@ namespace euler
       switch (axis)
       {
         case 'x':
-          R = Rx(angle);
+          R = R_x_passive(angle);
           break;
         case 'y':
-          R = Ry(angle);
+          R = R_y_passive(angle);
           break;
         case 'z':
-          R = Rz(angle);
+          R = R_z_passive(angle);
           break;
       }
 
-      if (use_extrinsic)
+      if (use_active)
       {
         R.transposeInPlace();
       }

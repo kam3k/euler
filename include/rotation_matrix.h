@@ -10,7 +10,7 @@ namespace euler
   using Sequence = std::string;
   using Angles = std::array<double, 3>;
   Eigen::Matrix3d rotationMatrix(const Sequence& sequence, const Angles& angles,
-                                 bool use_extrinsic = false);
+                                 bool use_extrinsic, bool use_active);
 }  // namespace euler
 
 #endif

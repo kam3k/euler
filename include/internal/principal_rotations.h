@@ -7,10 +7,10 @@ namespace euler
 {
   namespace internal
   {
-    Eigen::Matrix3d Rx(double angle);
-    Eigen::Matrix3d Ry(double angle);
-    Eigen::Matrix3d Rz(double angle);
-    Eigen::Matrix3d Rprincipal(char axis, double angle, bool use_extrinsic);
+    Eigen::Matrix3d R_x_passive(double angle);
+    Eigen::Matrix3d R_y_passive(double angle);
+    Eigen::Matrix3d R_z_passive(double angle);
+    Eigen::Matrix3d R_principal(char axis, double angle, bool use_active);
   }  // namespace internal
 } // namespace euler
 
