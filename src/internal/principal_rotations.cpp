@@ -39,7 +39,7 @@ namespace euler
       return ret;
     }
 
-    Eigen::Matrix3d Rprincipal(char axis, double angle, bool intrinsic)
+    Eigen::Matrix3d Rprincipal(char axis, double angle, bool use_extrinsic)
     {
       assert(axis == 'x' || axis == 'y' || axis == 'z');
 
@@ -57,7 +57,7 @@ namespace euler
           break;
       }
 
-      if (!intrinsic)
+      if (use_extrinsic)
       {
         R.transposeInPlace();
       }
