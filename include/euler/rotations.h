@@ -1,10 +1,10 @@
 #ifndef EULER_ROTATIONS_H
 #define EULER_ROTATIONS_H
 
-#include <array>
-#include <string>
 #include <Eigen/Dense>
+#include <array>
 #include <ostream>
+#include <string>
 
 namespace euler
 {
@@ -14,13 +14,13 @@ namespace euler
   using Quaternion = Eigen::Quaterniond;
 
   RotationMatrix getRotationMatrix(const Sequence& sequence,
-                                   const Angles& angles, bool use_extrinsic,
-                                   bool use_active);
+                                   const Angles& angles, bool is_intrinsic,
+                                   bool is_active);
 
   RotationMatrix getRotationMatrix(const Quaternion& q);
 
   Quaternion getQuaternion(const Sequence& sequence, const Angles& angles,
-                           bool use_extrinsic, bool use_active);
+                           bool is_intrinsic, bool is_active);
 
   Quaternion getQuaternion(const RotationMatrix& R);
 }  // namespace euler

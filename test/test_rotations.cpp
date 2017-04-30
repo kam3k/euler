@@ -1,6 +1,7 @@
 #include <catch/catch.hpp>
 #include <euler/rotations.h>
 #include <cmath>
+#include <iostream>
 
 using namespace euler;
 
@@ -25,7 +26,7 @@ TEST_CASE("Identity")
   CHECK(R_actual.isApprox(R_expect));
 }
 
-TEST_CASE("Rotation about principal axes")
+TEST_CASE("Rotations about principal axes")
 {
   const auto theta = M_PI/4.3;
   const auto s = std::sin(theta);
@@ -33,6 +34,7 @@ TEST_CASE("Rotation about principal axes")
 
   SECTION("Rotation about x-axis")
   {
+
     SECTION("Active")
     {
       RotationMatrix R_expect_active;
@@ -66,6 +68,7 @@ TEST_CASE("Rotation about principal axes")
 
   SECTION("Rotation about y-axis")
   {
+
     SECTION("Active")
     {
       RotationMatrix R_expect_active;
@@ -99,6 +102,7 @@ TEST_CASE("Rotation about principal axes")
 
   SECTION("Rotation about z-axis")
   {
+
     SECTION("Active")
     {
       RotationMatrix R_expect_active;
@@ -129,4 +133,344 @@ TEST_CASE("Rotation about principal axes")
       CHECK(R_actual_passive.isApprox(R_expect_passive));
     }
   }
+}
+
+TEST_CASE("Rotations of 90 degrees about each axis")
+{
+  std::array<double, 3> angles = {M_PI/2, M_PI/2, M_PI/2};
+  Eigen::Vector3d a(1, 0, 0);
+  Eigen::Vector3d b_expect;
+  Eigen::Vector3d b_actual;
+
+  SECTION("Intrinsic")
+  {
+    const auto is_intrinsic = true;
+
+    SECTION("xyz")
+    {
+      const auto sequence = "xyz";
+
+      SECTION("Active")
+      {
+        const auto is_active = true;
+        b_expect = {0, 0, 1};
+        b_actual =
+            getRotationMatrix(sequence, angles, is_intrinsic, is_active) * a;
+        CHECK(b_actual.isApprox(b_expect));
+      }
+
+      SECTION("Passive")
+      {
+        const auto is_active = false;
+        b_expect = {0, 0, 1};
+        b_actual =
+            getRotationMatrix(sequence, angles, is_intrinsic, is_active) * a;
+        CHECK(b_actual.isApprox(b_expect));
+      }
+    }
+
+    SECTION("yzx")
+    {
+      const auto sequence = "yzx";
+
+      SECTION("Active")
+      {
+        const auto is_active = true;
+        b_expect = {0, 1, 0};
+        b_actual =
+            getRotationMatrix(sequence, angles, is_intrinsic, is_active) * a;
+        CHECK(b_actual.isApprox(b_expect));
+      }
+
+      SECTION("Passive")
+      {
+        const auto is_active = false;
+        b_expect = {0, 1, 0};
+        b_actual =
+            getRotationMatrix(sequence, angles, is_intrinsic, is_active) * a;
+        CHECK(b_actual.isApprox(b_expect));
+      }
+    }
+
+    SECTION("zyx")
+    {
+      const auto sequence = "zyx";
+
+      SECTION("Active")
+      {
+        const auto is_active = true;
+        b_expect = {0, 0, -1};
+        b_actual =
+            getRotationMatrix(sequence, angles, is_intrinsic, is_active) * a;
+        CHECK(b_actual.isApprox(b_expect));
+      }
+
+      SECTION("Passive")
+      {
+        const auto is_active = false;
+        b_expect = {0, 0, 1};
+        b_actual =
+            getRotationMatrix(sequence, angles, is_intrinsic, is_active) * a;
+        CHECK(b_actual.isApprox(b_expect));
+      }
+    }
+
+    SECTION("xzy")
+    {
+      const auto sequence = "xzy";
+
+      SECTION("Active")
+      {
+        const auto is_active = true;
+        b_expect = {0, 1, 0};
+        b_actual =
+            getRotationMatrix(sequence, angles, is_intrinsic, is_active) * a;
+        CHECK(b_actual.isApprox(b_expect));
+      }
+
+      SECTION("Passive")
+      {
+        const auto is_active = false;
+        b_expect = {0, -1, 0};
+        b_actual =
+            getRotationMatrix(sequence, angles, is_intrinsic, is_active) * a;
+        CHECK(b_actual.isApprox(b_expect));
+      }
+    }
+
+    SECTION("xyx")
+    {
+      const auto sequence = "xyx";
+
+      SECTION("Active")
+      {
+        const auto is_active = true;
+        b_expect = {0, 1, 0};
+        b_actual =
+            getRotationMatrix(sequence, angles, is_intrinsic, is_active) * a;
+        CHECK(b_actual.isApprox(b_expect));
+      }
+
+      SECTION("Passive")
+      {
+        const auto is_active = false;
+        b_expect = {0, 1, 0};
+        b_actual =
+            getRotationMatrix(sequence, angles, is_intrinsic, is_active) * a;
+        CHECK(b_actual.isApprox(b_expect));
+      }
+    }
+
+    SECTION("zxz")
+    {
+      const auto sequence = "zxz";
+
+      SECTION("Active")
+      {
+        const auto is_active = true;
+        b_expect = {0, 0, 1};
+        b_actual =
+            getRotationMatrix(sequence, angles, is_intrinsic, is_active) * a;
+        CHECK(b_actual.isApprox(b_expect));
+      }
+
+      SECTION("Passive")
+      {
+        const auto is_active = false;
+        b_expect = {0, 0, 1};
+        b_actual =
+            getRotationMatrix(sequence, angles, is_intrinsic, is_active) * a;
+        CHECK(b_actual.isApprox(b_expect));
+      }
+    }
+
+    SECTION("yzy")
+    {
+      const auto sequence = "yzy";
+
+      SECTION("Active")
+      {
+        const auto is_active = true;
+        b_expect = {-1, 0, 0};
+        b_actual =
+            getRotationMatrix(sequence, angles, is_intrinsic, is_active) * a;
+        CHECK(b_actual.isApprox(b_expect));
+      }
+
+      SECTION("Passive")
+      {
+        const auto is_active = false;
+        b_expect = {-1, 0, 0};
+        b_actual =
+            getRotationMatrix(sequence, angles, is_intrinsic, is_active) * a;
+        CHECK(b_actual.isApprox(b_expect));
+      }
+    }
+  }
+
+/*   SECTION("Extrinsic") */
+/*   { */
+/*     const auto is_intrinsic = false; */
+
+/*     SECTION("xyz") */
+/*     { */
+/*       const auto sequence = "xyz"; */
+
+/*       SECTION("Active") */
+/*       { */
+/*         const auto is_active = true; */
+/*         b_expect = {0, 0, 1}; */
+/*         b_actual = */
+/*             getRotationMatrix(sequence, angles, is_intrinsic, is_active) * a; */
+/*         CHECK(b_actual.isApprox(b_expect)); */
+/*       } */
+
+/*       SECTION("Passive") */
+/*       { */
+/*         const auto is_active = false; */
+/*         b_expect = {0, 0, 1}; */
+/*         b_actual = */
+/*             getRotationMatrix(sequence, angles, is_intrinsic, is_active) * a; */
+/*         CHECK(b_actual.isApprox(b_expect)); */
+/*       } */
+/*     } */
+
+/*     SECTION("yzx") */
+/*     { */
+/*       const auto sequence = "yzx"; */
+
+/*       SECTION("Active") */
+/*       { */
+/*         const auto is_active = true; */
+/*         b_expect = {0, 1, 0}; */
+/*         b_actual = */
+/*             getRotationMatrix(sequence, angles, is_intrinsic, is_active) * a; */
+/*         CHECK(b_actual.isApprox(b_expect)); */
+/*       } */
+
+/*       SECTION("Passive") */
+/*       { */
+/*         const auto is_active = false; */
+/*         b_expect = {0, 1, 0}; */
+/*         b_actual = */
+/*             getRotationMatrix(sequence, angles, is_intrinsic, is_active) * a; */
+/*         CHECK(b_actual.isApprox(b_expect)); */
+/*       } */
+/*     } */
+
+/*     SECTION("zyx") */
+/*     { */
+/*       const auto sequence = "zyx"; */
+
+/*       SECTION("Active") */
+/*       { */
+/*         const auto is_active = true; */
+/*         b_expect = {0, 0, -1}; */
+/*         b_actual = */
+/*             getRotationMatrix(sequence, angles, is_intrinsic, is_active) * a; */
+/*         CHECK(b_actual.isApprox(b_expect)); */
+/*       } */
+
+/*       SECTION("Passive") */
+/*       { */
+/*         const auto is_active = false; */
+/*         b_expect = {0, 0, 1}; */
+/*         b_actual = */
+/*             getRotationMatrix(sequence, angles, is_intrinsic, is_active) * a; */
+/*         CHECK(b_actual.isApprox(b_expect)); */
+/*       } */
+/*     } */
+
+/*     SECTION("xzy") */
+/*     { */
+/*       const auto sequence = "xzy"; */
+
+/*       SECTION("Active") */
+/*       { */
+/*         const auto is_active = true; */
+/*         b_expect = {0, 1, 0}; */
+/*         b_actual = */
+/*             getRotationMatrix(sequence, angles, is_intrinsic, is_active) * a; */
+/*         CHECK(b_actual.isApprox(b_expect)); */
+/*       } */
+
+/*       SECTION("Passive") */
+/*       { */
+/*         const auto is_active = false; */
+/*         b_expect = {0, -1, 0}; */
+/*         b_actual = */
+/*             getRotationMatrix(sequence, angles, is_intrinsic, is_active) * a; */
+/*         CHECK(b_actual.isApprox(b_expect)); */
+/*       } */
+/*     } */
+
+/*     SECTION("xyx") */
+/*     { */
+/*       const auto sequence = "xyx"; */
+
+/*       SECTION("Active") */
+/*       { */
+/*         const auto is_active = true; */
+/*         b_expect = {0, 1, 0}; */
+/*         b_actual = */
+/*             getRotationMatrix(sequence, angles, is_intrinsic, is_active) * a; */
+/*         CHECK(b_actual.isApprox(b_expect)); */
+/*       } */
+
+/*       SECTION("Passive") */
+/*       { */
+/*         const auto is_active = false; */
+/*         b_expect = {0, 1, 0}; */
+/*         b_actual = */
+/*             getRotationMatrix(sequence, angles, is_intrinsic, is_active) * a; */
+/*         CHECK(b_actual.isApprox(b_expect)); */
+/*       } */
+/*     } */
+
+/*     SECTION("zxz") */
+/*     { */
+/*       const auto sequence = "zxz"; */
+
+/*       SECTION("Active") */
+/*       { */
+/*         const auto is_active = true; */
+/*         b_expect = {0, 0, 1}; */
+/*         b_actual = */
+/*             getRotationMatrix(sequence, angles, is_intrinsic, is_active) * a; */
+/*         CHECK(b_actual.isApprox(b_expect)); */
+/*       } */
+
+/*       SECTION("Passive") */
+/*       { */
+/*         const auto is_active = false; */
+/*         b_expect = {0, 0, 1}; */
+/*         b_actual = */
+/*             getRotationMatrix(sequence, angles, is_intrinsic, is_active) * a; */
+/*         CHECK(b_actual.isApprox(b_expect)); */
+/*       } */
+/*     } */
+
+/*     SECTION("yzy") */
+/*     { */
+/*       const auto sequence = "yzy"; */
+
+/*       SECTION("Active") */
+/*       { */
+/*         const auto is_active = true; */
+/*         b_expect = {-1, 0, 0}; */
+/*         b_actual = */
+/*             getRotationMatrix(sequence, angles, is_intrinsic, is_active) * a; */
+/*         CHECK(b_actual.isApprox(b_expect)); */
+/*       } */
+
+/*       SECTION("Passive") */
+/*       { */
+/*         const auto is_active = false; */
+/*         b_expect = {-1, 0, 0}; */
+/*         b_actual = */
+/*             getRotationMatrix(sequence, angles, is_intrinsic, is_active) * a; */
+/*         CHECK(b_actual.isApprox(b_expect)); */
+/*       } */
+/*     } */
+/*   } */
 }
