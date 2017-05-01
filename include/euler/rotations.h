@@ -13,14 +13,32 @@ namespace euler
   using RotationMatrix = Eigen::Matrix3d;
   using Quaternion = Eigen::Quaterniond;
 
+  enum class Order
+  {
+    INTRINSIC,
+    EXTRINSIC
+  };
+
+  enum class Direction
+  {
+    ACTIVE,
+    PASSIVE
+  };
+
+  struct Convention
+  {
+    Convention(Order o, Direction d) : order(o), direction(d){};
+    const Order order;
+    const Direction direction;
+  };
+
   RotationMatrix getRotationMatrix(const Sequence& sequence,
-                                   const Angles& angles, bool is_intrinsic,
-                                   bool is_active);
+                                   const Angles& angles, Convention convention);
 
   RotationMatrix getRotationMatrix(const Quaternion& q);
 
   Quaternion getQuaternion(const Sequence& sequence, const Angles& angles,
-                           bool is_intrinsic, bool is_active);
+                           Convention convention);
 
   Quaternion getQuaternion(const RotationMatrix& R);
 }  // namespace euler

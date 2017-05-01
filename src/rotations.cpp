@@ -61,15 +61,14 @@ namespace euler
   } // namespace
 
   RotationMatrix getRotationMatrix(const Sequence& sequence,
-                                   const Angles& angles, bool is_intrinsic,
-                                   bool is_active)
+                                   const Angles& angles, Convention convention)
   {
     assert(sequence.size() == 3);
     assert(angles.size() == 3);
 
     Eigen::Matrix3d R;
 
-    if (is_intrinsic)
+    if (convention.order == Order::INTRINSIC)
     {
       R = R_active(sequence[0], angles[0]) *
           R_active(sequence[1], angles[1]) *
@@ -82,7 +81,7 @@ namespace euler
           R_active(sequence[0], angles[0]);
     }
 
-    if (!is_active)
+    if (convention.direction == Direction::PASSIVE)
     {
       R.transposeInPlace();
     }
@@ -96,10 +95,10 @@ namespace euler
   }
 
   Quaternion getQuaternion(const Sequence& sequence, const Angles& angles,
-                           bool is_intrinsic, bool is_active)
+                           Convention convention)
   {
     return Quaternion(
-               getRotationMatrix(sequence, angles, is_intrinsic, is_active))
+               getRotationMatrix(sequence, angles, convention))
         .normalized();
   }
 
