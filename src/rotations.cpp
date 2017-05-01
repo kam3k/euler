@@ -6,9 +6,9 @@ namespace euler
 {
   namespace 
   {
-    Eigen::Matrix3d R_active_x(double angle)
+    RotationMatrix R_active_x(double angle)
     {
-      Eigen::Matrix3d ret;
+      RotationMatrix ret;
       const auto c = std::cos(angle);
       const auto s = std::sin(angle);
       ret << 1,  0,  0,
@@ -17,9 +17,9 @@ namespace euler
       return ret;
     }
 
-    Eigen::Matrix3d R_active_y(double angle)
+    RotationMatrix R_active_y(double angle)
     {
-      Eigen::Matrix3d ret;
+      RotationMatrix ret;
       const auto c = std::cos(angle);
       const auto s = std::sin(angle);
       ret << c,  0,  s,
@@ -28,9 +28,9 @@ namespace euler
       return ret;
     }
 
-    Eigen::Matrix3d R_active_z(double angle)
+    RotationMatrix R_active_z(double angle)
     {
-      Eigen::Matrix3d ret;
+      RotationMatrix ret;
       const auto c = std::cos(angle);
       const auto s = std::sin(angle);
       ret << c, -s,  0,
@@ -39,11 +39,11 @@ namespace euler
       return ret;
     }
 
-    Eigen::Matrix3d R_active(char axis, double angle)
+    RotationMatrix R_active(char axis, double angle)
     {
       assert(axis == 'x' || axis == 'y' || axis == 'z');
 
-      Eigen::Matrix3d R;
+      RotationMatrix R;
       switch (axis)
       {
         case 'x':
@@ -66,7 +66,7 @@ namespace euler
     assert(sequence.size() == 3);
     assert(angles.size() == 3);
 
-    Eigen::Matrix3d R;
+    RotationMatrix R;
 
     if (convention.order == Order::INTRINSIC)
     {
