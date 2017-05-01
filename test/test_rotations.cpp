@@ -1,7 +1,9 @@
 #include <catch/catch.hpp>
 #include <euler/rotations.h>
 #include <cmath>
+
 #include <iostream>
+#include <euler/io.h>
 
 using namespace euler;
 
@@ -470,12 +472,12 @@ TEST_CASE("General rotations")
     std::array<double, 3> angles = {11 * M_PI / 180, -38 * M_PI / 180,
                                     4 * M_PI / 180};
 
-    Eigen::Matrix3d R_expect;
+    RotationMatrix R_expect;
     R_expect << 0.7860912, -0.0549689,  -0.6156615,
                -0.0487127,  0.9874306,  -0.1503595,
                 0.616188,   0.1481869,   0.7735327;
 
-    Eigen::Matrix3d R_actual =
+    RotationMatrix R_actual =
         getRotationMatrix("xyz", angles, {Order::INTRINSIC, Direction::ACTIVE});
     CHECK(R_actual.isApprox(R_expect, 1e-6));
 
@@ -496,12 +498,12 @@ TEST_CASE("General rotations")
     std::array<double, 3> angles = {11 * M_PI / 180, -38 * M_PI / 180,
                                     4 * M_PI / 180};
 
-    Eigen::Matrix3d R_expect;
+    RotationMatrix R_expect;
     R_expect << 0.786091,  -0.185662,  -0.589568,
                 0.0549689,  0.971041,  -0.232502,
                 0.615661,   0.15036,    0.773533;
 
-    Eigen::Matrix3d R_actual =
+    RotationMatrix R_actual =
         getRotationMatrix("xyz", angles, {Order::EXTRINSIC, Direction::ACTIVE});
     CHECK(R_actual.isApprox(R_expect, 1e-6));
 
@@ -520,4 +522,18 @@ TEST_CASE("General rotations")
 
 TEST_CASE("Quaternions")
 {
+  // Identity
+  Quaternion q_expect = Quaternion::Identity();
+  Quaternion q_actual =
+      getQuaternion("xyz", {0, 0, 0}, {Order::INTRINSIC, Direction::ACTIVE});
+  CHECK(q_actual.isApprox(q_expect));
+
+  // Conversion to/from rotation matrix
+  /* q_expect = {3.1, -4.3, -11.2, 9.3}; */
+  /* q_expect.normalize(); */
+  /* Quaternion q_expect_neg(-3.1, 4.3, 11.2, -9.3); */
+  /* q_expect_neg.normalize(); */
+  /* q_actual = getQuaternion(getRotationMatrix(q_expect)); */
+  /* CHECK(q_actual.isApprox(q_expect, 1e-6) || */
+  /*       q_actual.isApprox(q_expect_neg, 1e-6)); */
 }
