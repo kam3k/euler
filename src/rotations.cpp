@@ -6,7 +6,7 @@ namespace euler
 {
   namespace 
   {
-    Eigen::Matrix3d R_x_active(double angle)
+    Eigen::Matrix3d R_active_x(double angle)
     {
       Eigen::Matrix3d ret;
       const auto c = std::cos(angle);
@@ -17,7 +17,7 @@ namespace euler
       return ret;
     }
 
-    Eigen::Matrix3d R_y_active(double angle)
+    Eigen::Matrix3d R_active_y(double angle)
     {
       Eigen::Matrix3d ret;
       const auto c = std::cos(angle);
@@ -28,7 +28,7 @@ namespace euler
       return ret;
     }
 
-    Eigen::Matrix3d R_z_active(double angle)
+    Eigen::Matrix3d R_active_z(double angle)
     {
       Eigen::Matrix3d ret;
       const auto c = std::cos(angle);
@@ -47,13 +47,13 @@ namespace euler
       switch (axis)
       {
         case 'x':
-          R = R_x_active(angle);
+          R = R_active_x(angle);
           break;
         case 'y':
-          R = R_y_active(angle);
+          R = R_active_y(angle);
           break;
         case 'z':
-          R = R_z_active(angle);
+          R = R_active_z(angle);
           break;
       }
       return R;
