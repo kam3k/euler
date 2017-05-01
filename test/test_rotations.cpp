@@ -529,11 +529,29 @@ TEST_CASE("Quaternions")
   CHECK(q_actual.isApprox(q_expect));
 
   // Conversion to/from rotation matrix
-  /* q_expect = {3.1, -4.3, -11.2, 9.3}; */
-  /* q_expect.normalize(); */
-  /* Quaternion q_expect_neg(-3.1, 4.3, 11.2, -9.3); */
-  /* q_expect_neg.normalize(); */
-  /* q_actual = getQuaternion(getRotationMatrix(q_expect)); */
-  /* CHECK(q_actual.isApprox(q_expect, 1e-6) || */
-  /*       q_actual.isApprox(q_expect_neg, 1e-6)); */
+  q_expect = {3.1, -4.3, -11.2, 9.3};
+  q_expect.normalize();
+  q_actual = getQuaternion(getRotationMatrix(q_expect));
+  if (q_actual.w() < 0)
+  {
+    q_actual.w() *= -1;
+    q_actual.x() *= -1;
+    q_actual.y() *= -1;
+    q_actual.z() *= -1;
+  }
+  CHECK(q_actual.isApprox(q_expect, 1e-6));
+
+  // General rotation
+  q_expect = {0.8646213841619719, -0.19108049297037485, 0.2728232952874746, -0.3761456590265506};
+  q_actual = getQuaternion(
+      "yzx", {30 * M_PI/180, -49 * M_PI/180, -11 * M_PI/180},
+      {Order::INTRINSIC, Direction::ACTIVE});
+  if (q_actual.w() < 0)
+  {
+    q_actual.w() *= -1;
+    q_actual.x() *= -1;
+    q_actual.y() *= -1;
+    q_actual.z() *= -1;
+  }
+  CHECK(q_actual.isApprox(q_expect, 1e-6));
 }
