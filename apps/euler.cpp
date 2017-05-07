@@ -111,6 +111,13 @@ int main(int argc, char* argv[])
   }
   euler::Angles angles = {std::stod(args.pos[0]), std::stod(args.pos[1]),
                           std::stod(args.pos[2])};
+
+  // Convert / verify angles
+  if (!radians)
+  {
+    std::for_each(angles.begin(), angles.end(),
+                  [](double& a) { a *= M_PI / 180; });
+  }
   if (!euler::areAnglesValid(angles))
   {
     std::cerr
