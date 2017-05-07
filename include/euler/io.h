@@ -5,13 +5,15 @@
 #include <Eigen/Geometry>
 #include <euler/rotations.h>
 
-std::ostream& operator<<(std::ostream& os, const euler::Quaternion& q);
-
 namespace euler
 {
   bool isSequenceValid(const Sequence& sequence);
 
   bool areAnglesValid(const Angles& angles);
+
+  void prettyPrint(const RotationMatrix& R);
+
+  void prettyPrint(const Quaternion& q);
 } // namespace euler
 
 #endif

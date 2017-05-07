@@ -60,7 +60,7 @@ int main(int argc, char* argv[])
            "angle angle\n\n"
            "Examples:\n\teuler 20 -10 35\n\teuler -ep 11.1 23.9 "
            "-129.4\n\teuler -ea -s yzy 41.2 -55.5 -97.8\n\teuler -p -s zxy "
-           "-176.234 -0.231 44.399\n\teuler -rpi -s xzx 0.21 1.16 -2.81\n\n";
+           "-176.234 -0.231 44.399\n\teuler -rpi -s xzx 0.21 1.16 -2.81\n";
 
   // Parse the arguments
   argagg::parser_results args;
@@ -76,19 +76,67 @@ int main(int argc, char* argv[])
     return -1;
   }
 
-	// If the help flag was specified, show usage and exit
+  // If the help flag was specified, show usage and exit
   if (args["help"])
   {
     std::cerr << usage.str() << arg_parser << std::endl;
     return 0;
   }
 
+  // Get radians / degrees
+  bool radians = args["radians"];
+
+  // Get intrinsic / extrinsic
+  euler::Order order =
+      args["extrinsic"] ? euler::Order::EXTRINSIC : euler::Order::INTRINSIC;
+
+  // Get active // passive
+  euler::Direction direction =
+      args["passive"] ? euler::Direction::PASSIVE : euler::Direction::ACTIVE;
+
+  // Get sequence
+  const std::string sequence = args["sequence"].as<std::string>("xyz");
+  if (!euler::isSequenceValid(sequence))
+  {
+    std::cerr << "Invalid sequence.\n" << usage.str() << std::endl;
+    return -1;
+  }
+
+  // Get angles
+  if (args.count() != 3)
+  {
+    std::cerr << "Error: Must provide exactly three angles.\n\n"
+              << usage.str() << std::endl;
+    return -1;
+  }
+  euler::Angles angles = {std::stod(args.pos[0]), std::stod(args.pos[1]),
+                          std::stod(args.pos[2])};
+  if (!euler::areAnglesValid(angles))
+  {
+    std::cerr
+        << "Error: Invalid angles. Angles (in order) must be in ranges:\n";
+    if (radians)
+    {
+      std::cerr << "[-pi, pi), [-pi/2, pi/2], [-pi, pi).\n\n";
+    }
+    else
+    {
+      std::cerr << "[-180, 180), (-90, 90), [-180, 180) degrees.\n\n";
+    }
+    std::cerr << usage.str() << std::endl;
+    return -1;
+  }
+
   // Create rotation matrix and quaternion from arguments
-  /* const euler::RotationMatrix R = */
-  /*     euler::getRotationMatrix(sequence, angles, convention); */
-  /* const euler::Quaternion q = euler::getQuaternion(R); */
+  const euler::RotationMatrix R =
+      euler::getRotationMatrix(sequence, angles, {order, direction});
+  const euler::Quaternion q = euler::getQuaternion(R);
 
   // Display results
+  std::cout << std::endl;
+  euler::prettyPrint(R);
+  std::cout << std::endl;
+  euler::prettyPrint(q);
 
   return 0;
 }
