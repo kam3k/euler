@@ -118,21 +118,6 @@ int main(int argc, char* argv[])
     std::for_each(angles.begin(), angles.end(),
                   [](double& a) { a *= M_PI / 180; });
   }
-  if (!euler::areAnglesValid(angles))
-  {
-    std::cerr
-        << "Error: Invalid angles. Angles (in order) must be in ranges:\n";
-    if (radians)
-    {
-      std::cerr << "[-pi, pi), [-pi/2, pi/2], [-pi, pi).\n\n";
-    }
-    else
-    {
-      std::cerr << "[-180, 180), (-90, 90), [-180, 180) degrees.\n\n";
-    }
-    std::cerr << usage.str() << std::endl;
-    return -1;
-  }
 
   // Create rotation matrix and quaternion from arguments
   const euler::RotationMatrix R =
