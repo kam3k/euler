@@ -108,8 +108,18 @@ int main(int argc, char* argv[])
               << usage.str() << arg_parser << std::endl;
     return -1;
   }
-  euler::Angles angles = {std::stod(args.pos[0]), std::stod(args.pos[1]),
-                          std::stod(args.pos[2])};
+  euler::Angles angles;
+  try
+  {
+    angles = {std::stod(args.pos[0]), std::stod(args.pos[1]),
+              std::stod(args.pos[2])};
+  }
+  catch (const std::invalid_argument&)
+  {
+    std::cerr << "Error: Invalid angles, must be three real numbers.\n\n"
+              << usage.str() << arg_parser << std::endl;
+    return -1;
+  }
 
   // Convert / verify angles
   if (!radians)

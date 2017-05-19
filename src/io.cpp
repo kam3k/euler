@@ -1,5 +1,6 @@
 #include <euler/io.h>
 #include <iomanip>
+#include <algorithm>
 
 std::ostream& operator<<(std::ostream& os, const euler::Quaternion& q)
 {
@@ -12,14 +13,18 @@ std::ostream& operator<<(std::ostream& os, const euler::Quaternion& q)
 
 namespace euler
 {
-  bool isSequenceValid(const Sequence& sequence)
+  bool isSequenceValid(const Sequence& seq)
   {
-    return true;
-  }
+    if (seq.length() != 3)
+    {
+      return false;
+    }
 
-  bool areAnglesValid(const Angles& angles)
-  {
-    return true;
+    std::array<std::string, 12> sequences = {"xyz", "xzy", "yxz", "yzx",
+                                             "zxy", "zyx", "xyx", "xzx",
+                                             "yxy", "yzy", "zxz", "zyz"};
+    return std::find(std::begin(sequences), std::end(sequences), seq) !=
+           std::end(sequences);
   }
 
   void prettyPrint(const RotationMatrix& R)
@@ -41,9 +46,9 @@ namespace euler
   {
     std::cout << "Quaternion:\n";
     std::cout << std::fixed << std::setprecision(4)
-              << "w: " << std::setw(7) << q.w() << "\n"
-              << "x: " << std::setw(7) << q.x() << "\n"
-              << "y: " << std::setw(7) << q.y() << "\n"
-              << "z: " << std::setw(7) << q.z() << "\n";
+              << " w: " << std::setw(7) << q.w() << "\n"
+              << " x: " << std::setw(7) << q.x() << "\n"
+              << " y: " << std::setw(7) << q.y() << "\n"
+              << " z: " << std::setw(7) << q.z() << "\n";
   }
 }  // namespace euler

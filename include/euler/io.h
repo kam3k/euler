@@ -9,8 +9,6 @@ namespace euler
 {
   bool isSequenceValid(const Sequence& sequence);
 
-  bool areAnglesValid(const Angles& angles);
-
   void prettyPrint(const RotationMatrix& R);
 
   void prettyPrint(const Quaternion& q);
