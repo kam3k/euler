@@ -22,25 +22,25 @@ int main(int argc, char* argv[])
     {
       "intrinsic", 
       {"-i", "--intrinsic"}, 
-      "Use intrinsic elemental rotations (default: true)", 
+      "Use intrinsic elemental rotations (incompatible with -e; default: true)", 
       0
     },
     {
       "extrinsic", 
       {"-e", "--extrinsic"}, 
-      "Use extrinsic elemental rotations (default: false)", 
+      "Use extrinsic elemental rotations (incompatible with -i; default: false)", 
       0
     },
     {
       "active", 
       {"-a", "--active"}, 
-      "Specify an active rotation (default: true)", 
+      "Specify an active rotation (incompatible with -p; default: true)", 
       0
     },
     {
       "passive", 
       {"-p", "--passive"}, 
-      "Specify a passive rotation (default: false)", 
+      "Specify a passive rotation (incompatible with -a; default: false)", 
       0
     },
     {
@@ -56,11 +56,12 @@ int main(int argc, char* argv[])
   std::ostringstream usage;
   usage << "Usage: euler "
         << "[-r | --radians] [-i | --intrinsic | -e | --extrinsic]\n\t"
-           "[-a | --active | -p | --passive] [-s S | --sequence=S]\n\tangle "
-           "angle angle\n\n"
-           "Examples:\n\teuler 20 -10 35\n\teuler -ep 11.1 23.9 "
-           "-129.4\n\teuler -ea -s yzy 41.2 -55.5 -97.8\n\teuler -p -s zxy "
-           "-176.234 -0.231 44.399\n\teuler -rpi -s xzx 0.21 1.16 -2.81\n";
+           "[-a | --active | -p | --passive] [-s S | --sequence=S]\n\t-- ANGLE "
+           "ANGLE ANGLE\n\n"
+           "Calculates rotation matrix and quaternion for given Euler angle sequence.\n\n"
+           "Examples:\n\teuler -- 20 -10 35\n\teuler -ep -- 11.1 23.9 "
+           "-129.4\n\teuler -ea -s yzy -- 41.2 -55.5 -97.8\n\teuler -p -s zxy "
+           "-- -176.234 -0.231 44.399\n\teuler -rpi -s xzx -- 0.21 1.16 -2.81\n\n";
 
   // Parse the arguments
   argagg::parser_results args;
@@ -70,9 +71,7 @@ int main(int argc, char* argv[])
   }
   catch (const std::exception& e)
   {
-    std::cerr << usage.str() << arg_parser << std::endl
-              << "Encountered exception while parsing arguments: " << e.what()
-              << std::endl;
+    std::cerr << "Error: Invalid inputs.\n\n" << usage.str() << arg_parser << std::endl;
     return -1;
   }
 
@@ -98,7 +97,7 @@ int main(int argc, char* argv[])
   const std::string sequence = args["sequence"].as<std::string>("xyz");
   if (!euler::isSequenceValid(sequence))
   {
-    std::cerr << "Invalid sequence.\n" << usage.str() << std::endl;
+    std::cerr << "Invalid sequence.\n" << usage.str() << arg_parser << std::endl;
     return -1;
   }
 
@@ -106,7 +105,7 @@ int main(int argc, char* argv[])
   if (args.count() != 3)
   {
     std::cerr << "Error: Must provide exactly three angles.\n\n"
-              << usage.str() << std::endl;
+              << usage.str() << arg_parser << std::endl;
     return -1;
   }
   euler::Angles angles = {std::stod(args.pos[0]), std::stod(args.pos[1]),
