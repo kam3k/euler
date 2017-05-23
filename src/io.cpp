@@ -4,10 +4,11 @@
 
 std::ostream& operator<<(std::ostream& os, const euler::Quaternion& q)
 {
-  os << "w: " << q.w() << "\n"
-     << "x: " << q.x() << "\n"
-     << "y: " << q.y() << "\n"
-     << "z: " << q.z();
+  os << std::fixed << std::setprecision(4) 
+     << " w: " << std::setw(7) << q.w() << "\n"
+     << " x: " << std::setw(7) << q.x() << "\n"
+     << " y: " << std::setw(7) << q.y() << "\n"
+     << " z: " << std::setw(7) << q.z() << "\n";
   return os;
 }
 
@@ -44,11 +45,6 @@ namespace euler
 
   void prettyPrint(const Quaternion& q)
   {
-    std::cout << "Quaternion:\n";
-    std::cout << std::fixed << std::setprecision(4)
-              << " w: " << std::setw(7) << q.w() << "\n"
-              << " x: " << std::setw(7) << q.x() << "\n"
-              << " y: " << std::setw(7) << q.y() << "\n"
-              << " z: " << std::setw(7) << q.z() << "\n";
+    std::cout << "Quaternion:\n" << q;
   }
 }  // namespace euler
