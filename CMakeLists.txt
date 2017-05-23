@@ -24,6 +24,9 @@ target_include_directories(euler_rotations PUBLIC
 add_executable(euler apps/euler.cpp)
 target_link_libraries(euler euler_rotations)
 
+# Install
+install(TARGETS euler DESTINATION bin)
+
 # Testing
 enable_testing()
 set(TEST_SOURCES 
