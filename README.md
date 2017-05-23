@@ -1,7 +1,22 @@
 ## euler
-A command line utility that converts euler angles to quaternions and rotation matrices. 
+A command line utility that converts euler angles to quaternions and rotation matrices.
+
+## Contents
+* [Usage](#usage)
+* [Examples](#examples)
+* [Installation](#installation)
+* [Technical Background](#technical-background)
+    * [Motivation](#motivation)
+    * [Intrinsic vs. Extrinsic](#intrinsic-vs-extrinsic)
+    * [Active vs. Passive](#active-vs-passive)
+* [FAQ](#faq)
+    * [I have roll, pitch, and yaw. Which parameters do I use?](#i-have-roll-pitch-and-yaw-which-parameters-do-i-use)
+    * [What are "classical" Euler angles? And what are Tait-Bryan angles?](#what-are-classical-euler-angles-and-what-are-tait-bryan-angles)
+    * [Why did you pick intrinsic, active, and "xyz" as the default parameters?](#why-did-you-pick-intrinsic-active-and-xyz-as-the-default-parameters)
+
 
 ## Usage
+The `--help` flag displays the usage below:
 ```
 $ euler [-r | --radians] [-i | --intrinsic | -e | --extrinsic]
         [-a | --active | -p | --passive] [-s S | --sequence=S]
