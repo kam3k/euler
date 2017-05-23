@@ -1,4 +1,4 @@
-# euler
+## euler
 A command line utility that converts euler angles to quaternions and rotation matrices. 
 
 ## Usage
@@ -34,6 +34,7 @@ Examples:
 ```
 
 ## Examples
+The default settings assume the rotation is composed intrinsically, represents an active rotation, and uses the "xyz" sequence:
 ```
 $ euler -- 20 -10 35
 
@@ -47,7 +48,9 @@ Quaternion:
  x:  0.1392
  y: -0.1339
  z:  0.2806
-
+```
+Flags modify the default parameters; for example, one can instead specify that the rotation is composed extrinsically:
+```
 $ euler -e -- 20 -10 35
 
 Rotation Matrix:
@@ -60,7 +63,9 @@ Quaternion:
  x:  0.1908
  y: -0.0298
  z:  0.3094
-
+```
+All configurable parameters can be explicitly provided. For example, below is an extrinsically composed, passive rotation using the "yzy" sequence:
+```
 $ euler -ep -s yzy -- 11 -76 -143.2231
 
 Rotation Matrix:
@@ -74,3 +79,41 @@ Quaternion:
  y:  0.7205
  z:  0.1373
 ```
+If desired, the input angles can be specified in radians and using scientific notation; for example:
+```
+$ euler -rpi -s xzx 2.35e-1 1.16 2.81
+
+Rotation Matrix:
+  0.3993  0.8916  0.2135
+  0.8669 -0.4430  0.2287
+  0.2985  0.0937 -0.9498
+
+Quaternion:
+ w: -0.0404
+ x:  0.8355
+ y:  0.5262
+ z:  0.1532
+```
+
+## Installation
+Coming soon.
+
+## Technical Background
+Coming soon.
+
+### Motivation
+Coming soon.
+
+### Intrinsic vs. Extrinsic
+Coming soon.
+
+### Active vs. Passive
+Coming soon.
+
+## FAQ
+### I have roll, pitch, and yaw. Which parameters do I use?
+Coming soon.
+### What are "classical" Euler angles? And what are Tait-Bryan angles?
+Coming soon.
+### Why did you pick intrinsic, active, and "xyz" as the default parameters?
+Coming soon.
