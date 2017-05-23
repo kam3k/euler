@@ -86,10 +86,23 @@ int main(int argc, char* argv[])
   bool radians = args["radians"];
 
   // Get intrinsic / extrinsic
+  if (args["intrinsic"] && args["extrinsic"])
+  {
+    std::cerr << "Error: Cannot use both intrinsic and extrinsic elemental "
+                 "rotations.\n\n"
+              << usage.str() << arg_parser << std::endl;
+    return -1;
+  }
   euler::Order order =
       args["extrinsic"] ? euler::Order::EXTRINSIC : euler::Order::INTRINSIC;
 
   // Get active // passive
+  if (args["active"] && args["passive"])
+  {
+    std::cerr << "Error: Cannot specify both an active and passive rotation.\n\n"
+              << usage.str() << arg_parser << std::endl;
+    return -1;
+  }
   euler::Direction direction =
       args["passive"] ? euler::Direction::PASSIVE : euler::Direction::ACTIVE;
 
@@ -97,7 +110,7 @@ int main(int argc, char* argv[])
   const std::string sequence = args["sequence"].as<std::string>("xyz");
   if (!euler::isSequenceValid(sequence))
   {
-    std::cerr << "Invalid sequence.\n" << usage.str() << arg_parser << std::endl;
+    std::cerr << "Error: Invalid sequence.\n\n" << usage.str() << arg_parser << std::endl;
     return -1;
   }
 
