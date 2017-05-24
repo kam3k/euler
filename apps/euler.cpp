@@ -47,7 +47,7 @@ int main(int argc, char* argv[])
       "sequence",
       {"-s", "--sequence"},
       "The rotation sequence (possible values: xyz, xzy, yxz, yzx, zxy, zyx,\n\t"
-      "xyx, xzx, yxy, yzy, zxz, zyz; default: xyz)", 
+      "xyx, xzx, yxy, yzy, zxz, zyz; default: zyx)", 
       1
     }
   }};
@@ -107,7 +107,7 @@ int main(int argc, char* argv[])
       args["passive"] ? euler::Direction::PASSIVE : euler::Direction::ACTIVE;
 
   // Get sequence
-  const std::string sequence = args["sequence"].as<std::string>("xyz");
+  const std::string sequence = args["sequence"].as<std::string>("zyx");
   if (!euler::isSequenceValid(sequence))
   {
     std::cerr << "Error: Invalid sequence.\n\n" << usage.str() << arg_parser << std::endl;
