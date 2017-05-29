@@ -1,5 +1,5 @@
 ## euler
-A command line utility that converts euler angles to quaternions and rotation matrices.
+A command line utility that converts euler angles to rotation matrices and quaternions.
 
 ## Contents
 * [Usage](#usage)
@@ -22,7 +22,8 @@ $ euler [-r | --radians] [-i | --intrinsic | -e | --extrinsic]
         [-a | --active | -p | --passive] [-s S | --sequence=S]
         -- ANGLE ANGLE ANGLE
 
-Calculates rotation matrix and quaternion for given Euler angle sequence.
+Calculates rotation matrix and quaternion for given Euler angle sequence. The
+rotation matrix pre-multiplies vectors in a right-handed coordinate frame.
 
 Examples:
         euler -- 20 -10 35
@@ -122,25 +123,27 @@ $ sudo make install
 ```
 
 ## Technical Background
-This section provides some background information on the conventions used convert Euler angles into other rotation parameterizations. That is, it explains what the flags mean in the [usage](#usage) section.
+This section provides some background information on the conventions used convert Euler angles into other rotation parameterizations. This helps explain what the flags mean in the [usage](#usage) section.
 
 ### Motivation
-Euler angles can be really frustrating to use. This is evident when you examine the flags in the [usage](#usage) section above. For example, suppose you are provided three Euler angles, with no other context. There are 24 different ways to use these angles to create a rotation matrix (12 sequences each for intrinsic and extrinsic elemental rotations) and the resulting rotation matrix can represent either an active or passive rotation. Although providing no context is (hopefully) a rare occurence, it is exceedingly common that not enough information is provided to narrow things down to a single rotation matrix. (The omission of intrinsic vs. extrinsic is often the problem.) Even worse, there appears to be some conflicts in the language used to describe Euler angles, where the "xyz" sequence used one person is the "zyx" sequence used by someone else. As a result, it is useful to have a tool that can not only be used to convert Euler angles into rotation matrices and unit quaternions, but also can be used to quickly test several conventions to determine which convention someone is using.
+Euler angles can be really frustrating to use because they are often imprecisely defined. For example, suppose you are provided three Euler angles, with no other context. There are 24 different ways to use these angles to create a rotation matrix (12 sequences each for intrinsic and extrinsic elemental rotations) and the resulting rotation matrix can represent either an active or passive rotation. Although providing no context is (hopefully) a rare occurence, it is exceedingly common that not enough information is provided to narrow things down to a single rotation matrix. (The omission of intrinsic vs. extrinsic is often the problem.) Even worse, there appears to be some conflicts in the language used to describe Euler angles, where the "xyz" sequence used by one person is the "zyx" sequence used by someone else. As a result, it is useful to have a tool that can not only be used to convert Euler angles into rotation matrices and unit quaternions, but also can be used to quickly test several conventions to determine which convention someone is using.
 
 ### Intrinsic vs. Extrinsic
-Coming soon.
+Using the terms *intrinsic* or *extrinsic* only matter during construction of a rotation matrix from a sequence of Euler angles. Put differently, once you have the final result, it doesn't make sense to say that a rotation matrix is "intrinsic" or "extrinsic"; rather, these terms tell you how it was constructed.
 
 ### Active vs. Passive
 Coming soon.
 
-### Combinations of Intrinsic, Extrinsic, Active, and Passive
+### Comparison of Intrinsic, Extrinsic, Active, and Passive
+To summarize the above two sections, intrinsic/extrinsic tells you how a rotation matrix was *constructed*, and active/passive tells you what the rotation matrix *represents*. This section shows how the different combinations of these parameters are related. Let R(a, b, c) be an *active* rotation matrix constructed *intrinsically* by applying the Euler angles a, b, and c (using any sequence). The following table describes how one would modify R(a, b, c) when other conventions are used.
 
 ### Other Conventions
+As stated in euler's [usage](#usage), the calculated rotation matrices *pre-multiply* column vectors (as opposed to *post-multiplying* row vectors). Furthermore, euler uses a *right-handed* coordinate system and the right hand rule is used to interpret the sign of the provided Euler angles.
 
 ## FAQ
 
-### I have roll, pitch, and yaw. Which parameters do I use?
-Coming soon.
+### I have yaw, pitch, and roll. Which parameters do I use?
+Most commonly, these angles represent an *intrinsic* rotation using the *zyx* sequence. See the [Active vs. Passive](#active-vs-passive) section to determine if you want an active or passive rotation.
 
 ### What are "classical" Euler angles? And what are Tait-Bryan angles?
 Some people use the name "Tait-Bryan" angles to describe Euler angles whose sequences consist of three different axes (i.e., xyz, xzy, yxz, yzx, zxy, zyx) and "classical" Euler angles to describe Euler angles whose sequences consist of only two different axes (i.e., xyx, xzx, yxy, yzy, zxz, zyz).
