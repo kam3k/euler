@@ -58,10 +58,13 @@ int main(int argc, char* argv[])
         << "[-r | --radians] [-i | --intrinsic | -e | --extrinsic]\n\t"
            "[-a | --active | -p | --passive] [-s S | --sequence=S]\n\t-- ANGLE "
            "ANGLE ANGLE\n\n"
-           "Calculates rotation matrix and quaternion for given Euler angle sequence.\n\n"
+           "Calculates rotation matrix and quaternion for given Euler angle "
+           "sequence. The\nrotation matrix pre-multiplies vectors in "
+           "a right-handed coordinate frame.\n\n"
            "Examples:\n\teuler -- 20 -10 35\n\teuler -ep -- 11.1 23.9 "
            "-129.4\n\teuler -ea -s yzy -- 41.2 -55.5 -97.8\n\teuler -p -s zxy "
-           "-- -176.234 -0.231 44.399\n\teuler -rpi -s xzx -- 0.21 1.16 -2.81\n\n";
+           "-- -176.234 -0.231 44.399\n\teuler -rpi -s xzx -- 0.21 1.16 "
+           "-2.81\n\n";
 
   // Parse the arguments
   argagg::parser_results args;
