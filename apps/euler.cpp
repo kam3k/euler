@@ -8,6 +8,7 @@
 int main(int argc, char* argv[])
 {
   // Create the parser
+  // clang-format off
   argagg::parser arg_parser {{
     {
       "help", 
@@ -53,6 +54,7 @@ int main(int argc, char* argv[])
       1
     }
   }};
+  // clang-format on
 
   // Define usage text
   std::ostringstream usage;
@@ -76,7 +78,8 @@ int main(int argc, char* argv[])
   }
   catch (const std::exception& e)
   {
-    std::cerr << "Error: Invalid inputs.\n\n" << usage.str() << arg_parser << std::endl;
+    std::cerr << "Error: Invalid inputs.\n\n"
+              << usage.str() << arg_parser << std::endl;
     return -1;
   }
 
@@ -88,7 +91,7 @@ int main(int argc, char* argv[])
   }
 
   // Get radians / degrees
-  bool radians = args["radians"];
+  const bool radians = args["radians"];
 
   // Get intrinsic / extrinsic
   if (args["intrinsic"] && args["extrinsic"])
@@ -98,24 +101,26 @@ int main(int argc, char* argv[])
               << usage.str() << arg_parser << std::endl;
     return -1;
   }
-  euler::Order order =
+  const auto order =
       args["extrinsic"] ? euler::Order::EXTRINSIC : euler::Order::INTRINSIC;
 
   // Get active // passive
   if (args["active"] && args["passive"])
   {
-    std::cerr << "Error: Cannot specify both an active and passive rotation.\n\n"
-              << usage.str() << arg_parser << std::endl;
+    std::cerr
+        << "Error: Cannot specify both an active and passive rotation.\n\n"
+        << usage.str() << arg_parser << std::endl;
     return -1;
   }
-  euler::Direction direction =
+  const auto direction =
       args["passive"] ? euler::Direction::PASSIVE : euler::Direction::ACTIVE;
 
   // Get sequence
-  const std::string sequence = args["sequence"].as<std::string>("zyx");
+  const auto sequence = args["sequence"].as<std::string>("zyx");
   if (!euler::isSequenceValid(sequence))
   {
-    std::cerr << "Error: Invalid sequence.\n\n" << usage.str() << arg_parser << std::endl;
+    std::cerr << "Error: Invalid sequence.\n\n"
+              << usage.str() << arg_parser << std::endl;
     return -1;
   }
 
