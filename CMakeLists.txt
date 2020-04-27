@@ -29,12 +29,13 @@ install(TARGETS euler DESTINATION bin)
 
 # Testing
 enable_testing()
-set(TEST_SOURCES 
-    test/catch/catch_main.cpp
-    test/test_io.cpp
-    test/test_rotations.cpp
-    )
-add_executable(run_all_tests ${TEST_SOURCES})
-target_include_directories(run_all_tests PRIVATE test)
-target_link_libraries(run_all_tests euler_rotations)
-add_test(NAME AllTests COMMAND run_all_tests)
+
+add_executable(test_io test/test_io.cpp test/catch/catch_main.cpp)
+target_include_directories(test_io PRIVATE test)
+target_link_libraries(test_io euler_rotations)
+add_test(NAME test_io COMMAND test_io)
+
+add_executable(test_rotations test/test_rotations.cpp test/catch/catch_main.cpp)
+target_include_directories(test_rotations PRIVATE test)
+target_link_libraries(test_rotations euler_rotations)
+add_test(NAME test_rotations COMMAND test_rotations)
