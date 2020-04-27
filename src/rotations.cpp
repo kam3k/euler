@@ -1,41 +1,48 @@
 #include <euler/rotations.h>
+
 #include <cassert>
 #include <cmath>
 
 namespace euler
 {
-  namespace 
+  namespace
   {
     RotationMatrix R_active_x(double angle)
     {
-      RotationMatrix ret;
       const auto c = std::cos(angle);
       const auto s = std::sin(angle);
+      RotationMatrix ret;
+      // clang-format off
       ret << 1,  0,  0,
              0,  c, -s,
              0,  s,  c;
+      // clang-format on
       return ret;
     }
 
     RotationMatrix R_active_y(double angle)
     {
-      RotationMatrix ret;
       const auto c = std::cos(angle);
       const auto s = std::sin(angle);
+      RotationMatrix ret;
+      // clang-format off
       ret << c,  0,  s,
              0,  1,  0,
             -s,  0,  c;
+      // clang-format on
       return ret;
     }
 
     RotationMatrix R_active_z(double angle)
     {
-      RotationMatrix ret;
       const auto c = std::cos(angle);
       const auto s = std::sin(angle);
+      RotationMatrix ret;
+      // clang-format off
       ret << c, -s,  0,
              s,  c,  0,
              0,  0,  1;
+      // clang-format on
       return ret;
     }
 
@@ -70,14 +77,12 @@ namespace euler
 
     if (convention.order == Order::INTRINSIC)
     {
-      R = R_active(sequence[0], angles[0]) *
-          R_active(sequence[1], angles[1]) *
+      R = R_active(sequence[0], angles[0]) * R_active(sequence[1], angles[1]) *
           R_active(sequence[2], angles[2]);
     }
-    else  // extrinsic
+    else // extrinsic
     {
-      R = R_active(sequence[2], angles[2]) *
-          R_active(sequence[1], angles[1]) *
+      R = R_active(sequence[2], angles[2]) * R_active(sequence[1], angles[1]) *
           R_active(sequence[0], angles[0]);
     }
 
@@ -97,8 +102,7 @@ namespace euler
   Quaternion getQuaternion(const Sequence& sequence, const Angles& angles,
                            Convention convention)
   {
-    return Quaternion(
-               getRotationMatrix(sequence, angles, convention))
+    return Quaternion(getRotationMatrix(sequence, angles, convention))
         .normalized();
   }
 
@@ -106,4 +110,4 @@ namespace euler
   {
     return Quaternion(R).normalized();
   }
-}  // namespace euler
+} // namespace euler

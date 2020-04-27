@@ -1,14 +1,17 @@
 #include <euler/io.h>
-#include <iomanip>
+
 #include <algorithm>
+#include <iomanip>
 
 std::ostream& operator<<(std::ostream& os, const euler::Quaternion& q)
 {
+  // clang-format off
   os << std::fixed << std::setprecision(4) 
      << " w: " << std::setw(7) << q.w() << "\n"
      << " x: " << std::setw(7) << q.x() << "\n"
      << " y: " << std::setw(7) << q.y() << "\n"
      << " z: " << std::setw(7) << q.z() << "\n";
+  // clang-format on
   return os;
 }
 
@@ -30,8 +33,9 @@ namespace euler
 
   void prettyPrint(const RotationMatrix& R)
   {
-    std::cout << "Rotation Matrix:\n";
-    std::cout << std::fixed << std::setprecision(4)
+    // clang-format off
+    std::cout << "Rotation Matrix:\n"
+      << std::fixed << std::setprecision(4)
       << std::setw(8) << R(0, 0)
       << std::setw(8) << R(0, 1)
       << std::setw(8) << R(0, 2) << "\n"
@@ -41,10 +45,11 @@ namespace euler
       << std::setw(8) << R(2, 0)
       << std::setw(8) << R(2, 1)
       << std::setw(8) << R(2, 2) << "\n";
+    // clang-format on
   }
 
   void prettyPrint(const Quaternion& q)
   {
     std::cout << "Quaternion:\n" << q;
   }
-}  // namespace euler
+} // namespace euler

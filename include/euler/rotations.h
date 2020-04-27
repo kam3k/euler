@@ -2,6 +2,7 @@
 #define EULER_ROTATIONS_H
 
 #include <Eigen/Dense>
+
 #include <array>
 #include <ostream>
 #include <string>
@@ -20,7 +21,7 @@ namespace euler
   /// Always normalized (i.e., unit quaternion)
   using Quaternion = Eigen::Quaterniond;
 
-  /** 
+  /**
    * @brief Order of rotation
    */
   enum class Order
@@ -29,7 +30,7 @@ namespace euler
     EXTRINSIC
   };
 
-  /** 
+  /**
    * @brief Direction of rotation
    */
   enum class Direction
@@ -38,8 +39,8 @@ namespace euler
     PASSIVE
   };
 
-  /** 
-   * @brief Fully describes the conventions used for a rotation 
+  /**
+   * @brief Fully describes the conventions used for a rotation
    **/
   struct Convention
   {
@@ -71,13 +72,13 @@ namespace euler
    */
   RotationMatrix getRotationMatrix(const Quaternion& q);
 
-  /** 
+  /**
    * @brief Calculates a unit quaternion representing a rotation.
-   * 
+   *
    * @param[in] sequence The sequence of principal axes (e.g., xyz, zxz, etc.)
    * @param[in] angles The three Euler angles in the same order as the sequence
    * @param[in] convention The convention used to generate the rotation matrix
-   * 
+   *
    * @return The resulting unit quaternion
    */
   Quaternion getQuaternion(const Sequence& sequence, const Angles& angles,
@@ -92,6 +93,6 @@ namespace euler
    * rotation matrix
    */
   Quaternion getQuaternion(const RotationMatrix& R);
-}  // namespace euler
+} // namespace euler
 
 #endif

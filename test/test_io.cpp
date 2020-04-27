@@ -1,5 +1,7 @@
 #include <catch/catch.hpp>
+
 #include <euler/io.h>
+
 #include <cmath>
 
 using namespace euler;

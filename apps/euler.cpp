@@ -1,7 +1,9 @@
-#include <iostream>
-#include <argagg/argagg.hpp>
 #include <euler/io.h>
 #include <euler/rotations.h>
+
+#include <argagg/argagg.hpp>
+
+#include <iostream>
 
 int main(int argc, char* argv[])
 {

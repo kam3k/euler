@@ -1,9 +1,11 @@
 #ifndef EULER_IO_H
 #define EULER_IO_H
 
-#include <iostream>
-#include <Eigen/Geometry>
 #include <euler/rotations.h>
+
+#include <Eigen/Geometry>
+
+#include <iostream>
 
 namespace euler
 {
