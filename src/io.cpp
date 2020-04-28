@@ -7,10 +7,10 @@ std::ostream& operator<<(std::ostream& os, const euler::Quaternion& q)
 {
   // clang-format off
   os << std::fixed << std::setprecision(4) 
-     << " w: " << std::setw(7) << q.w() << "\n"
-     << " x: " << std::setw(7) << q.x() << "\n"
-     << " y: " << std::setw(7) << q.y() << "\n"
-     << " z: " << std::setw(7) << q.z() << "\n";
+     << " w: " << std::setw(7) << q[0] << "\n"
+     << " x: " << std::setw(7) << q[1] << "\n"
+     << " y: " << std::setw(7) << q[2] << "\n"
+     << " z: " << std::setw(7) << q[3] << "\n";
   // clang-format on
   return os;
 }
@@ -36,20 +36,27 @@ namespace euler
     // clang-format off
     std::cout << "Rotation Matrix:\n"
       << std::fixed << std::setprecision(4)
-      << std::setw(8) << R(0, 0)
-      << std::setw(8) << R(0, 1)
-      << std::setw(8) << R(0, 2) << "\n"
-      << std::setw(8) << R(1, 0)
-      << std::setw(8) << R(1, 1)
-      << std::setw(8) << R(1, 2) << "\n"
-      << std::setw(8) << R(2, 0)
-      << std::setw(8) << R(2, 1)
-      << std::setw(8) << R(2, 2) << "\n";
+      << std::setw(8) << R[0]
+      << std::setw(8) << R[1]
+      << std::setw(8) << R[2] << "\n"
+      << std::setw(8) << R[3]
+      << std::setw(8) << R[4]
+      << std::setw(8) << R[5] << "\n"
+      << std::setw(8) << R[6]
+      << std::setw(8) << R[7]
+      << std::setw(8) << R[8] << "\n";
     // clang-format on
   }
 
   void prettyPrint(const Quaternion& q)
   {
-    std::cout << "Quaternion:\n" << q;
+    // clang-format off
+    std::cout << "Quaternion:\n"
+      << std::fixed << std::setprecision(4)
+      << " w:" << std::setw(8) << q[0] << "\n"
+      << " x:" << std::setw(8) << q[1] << "\n"
+      << " y:" << std::setw(8) << q[2] << "\n"
+      << " z:" << std::setw(8) << q[3] << "\n";
+    // clang-format on
   }
 } // namespace euler

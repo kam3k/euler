@@ -112,7 +112,6 @@ Quaternion:
 ```
 
 ## Installation
-[Eigen](http://eigen.tuxfamily.org/index.php?title=Main_Page) is a dependency of euler and must be installed.
 ```
 $ git clone https://github.com/kam3k/euler.git
 $ cd euler

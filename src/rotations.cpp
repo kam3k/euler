@@ -11,11 +11,10 @@ namespace euler
     {
       const auto c = std::cos(angle);
       const auto s = std::sin(angle);
-      RotationMatrix ret;
       // clang-format off
-      ret << 1,  0,  0,
-             0,  c, -s,
-             0,  s,  c;
+      RotationMatrix ret = {1.0,  0.0,  0.0,
+                            0.0,    c,   -s,
+                            0.0,    s,    c};
       // clang-format on
       return ret;
     }
@@ -24,11 +23,10 @@ namespace euler
     {
       const auto c = std::cos(angle);
       const auto s = std::sin(angle);
-      RotationMatrix ret;
       // clang-format off
-      ret << c,  0,  s,
-             0,  1,  0,
-            -s,  0,  c;
+      RotationMatrix ret = {  c,  0.0,    s,
+                            0.0,  1.0,  0.0,
+                             -s,  0.0,    c};
       // clang-format on
       return ret;
     }
@@ -37,11 +35,10 @@ namespace euler
     {
       const auto c = std::cos(angle);
       const auto s = std::sin(angle);
-      RotationMatrix ret;
       // clang-format off
-      ret << c, -s,  0,
-             s,  c,  0,
-             0,  0,  1;
+      RotationMatrix ret = {  c,   -s,  0.0,
+                              s,    c,  0.0,
+                            0.0,  0.0,  1.0};
       // clang-format on
       return ret;
     }
@@ -67,8 +64,30 @@ namespace euler
     }
   } // namespace
 
-  RotationMatrix getRotationMatrix(const Sequence& sequence,
-                                   const Angles& angles, Convention convention)
+  RotationMatrix operator*(const RotationMatrix& lhs, const RotationMatrix& rhs)
+  {
+    return {lhs[0] * rhs[0] + lhs[1] * rhs[3] + lhs[2] * rhs[6],
+            lhs[0] * rhs[1] + lhs[1] * rhs[4] + lhs[2] * rhs[7],
+            lhs[0] * rhs[2] + lhs[1] * rhs[5] + lhs[2] * rhs[8],
+            lhs[3] * rhs[0] + lhs[4] * rhs[3] + lhs[5] * rhs[6],
+            lhs[3] * rhs[1] + lhs[4] * rhs[4] + lhs[5] * rhs[7],
+            lhs[3] * rhs[2] + lhs[4] * rhs[5] + lhs[5] * rhs[8],
+            lhs[6] * rhs[0] + lhs[7] * rhs[3] + lhs[8] * rhs[6],
+            lhs[6] * rhs[1] + lhs[7] * rhs[4] + lhs[8] * rhs[7],
+            lhs[6] * rhs[2] + lhs[7] * rhs[5] + lhs[8] * rhs[8]};
+  }
+
+  RotationMatrix transpose(const RotationMatrix& R)
+  {
+    // clang-format off
+    return {R[0], R[3], R[6], 
+            R[1], R[4], R[7], 
+            R[2], R[5], R[8]};
+    // clang-format on
+  }
+
+  RotationMatrix toRotationMatrix(const Sequence& sequence,
+                                  const Angles& angles, Convention convention)
   {
     assert(sequence.size() == 3);
     assert(angles.size() == 3);
@@ -86,28 +105,22 @@ namespace euler
           R_active(sequence[0], angles[0]);
     }
 
-    if (convention.direction == Direction::PASSIVE)
-    {
-      R.transposeInPlace();
-    }
-
-    return R;
+    return (convention.direction == Direction::ACTIVE) ? R : transpose(R);
   }
 
-  RotationMatrix getRotationMatrix(const Quaternion& q)
+  Quaternion toQuaternion(const RotationMatrix& R)
   {
-    return q.normalized().toRotationMatrix();
-  }
+    Quaternion q;
+    q[0] = std::sqrt(std::max(0.0, 1.0 + R[0] + R[4] + R[8])) / 2.0;
 
-  Quaternion getQuaternion(const Sequence& sequence, const Angles& angles,
-                           Convention convention)
-  {
-    return Quaternion(getRotationMatrix(sequence, angles, convention))
-        .normalized();
-  }
+    q[1] = std::sqrt(std::max(0.0, 1.0 + R[0] - R[4] - R[8])) / 2.0;
+    q[1] = std::copysign(q[1], R[7] - R[5]);
 
-  Quaternion getQuaternion(const RotationMatrix& R)
-  {
-    return Quaternion(R).normalized();
+    q[2] = std::sqrt(std::max(0.0, 1.0 - R[0] + R[4] - R[8])) / 2.0;
+    q[2] = std::copysign(q[2], R[2] - R[6]);
+
+    q[3] = std::sqrt(std::max(0.0, 1.0 - R[0] - R[4] + R[8])) / 2.0;
+    q[3] = std::copysign(q[3], R[3] - R[1]);
+    return q;
   }
 } // namespace euler

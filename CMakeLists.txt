@@ -5,10 +5,6 @@ project(euler)
 # use C++11
 set(CMAKE_CXX_FLAGS "-std=c++11")
 
-# Find Eigen
-list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}")
-find_package(Eigen3 REQUIRED)
-
 # Library
 set(SOURCES
     src/io.cpp
@@ -17,7 +13,6 @@ set(SOURCES
 add_library(euler_rotations ${SOURCES})
 target_include_directories(euler_rotations PUBLIC 
     include
-    ${EIGEN3_INCLUDE_DIR}
     )
 
 # Application

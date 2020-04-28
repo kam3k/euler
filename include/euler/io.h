@@ -3,8 +3,6 @@
 
 #include <euler/rotations.h>
 
-#include <Eigen/Geometry>
-
 #include <iostream>
 
 namespace euler

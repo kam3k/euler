@@ -3,6 +3,7 @@
 
 #include <argagg/argagg.hpp>
 
+#include <cmath>
 #include <iostream>
 
 int main(int argc, char* argv[])
@@ -153,8 +154,8 @@ int main(int argc, char* argv[])
 
   // Create rotation matrix and quaternion from arguments
   const euler::RotationMatrix R =
-      euler::getRotationMatrix(sequence, angles, {order, direction});
-  const euler::Quaternion q = euler::getQuaternion(R);
+      euler::toRotationMatrix(sequence, angles, {order, direction});
+  const euler::Quaternion q = euler::toQuaternion(R);
 
   // Display results
   std::cout << std::endl;

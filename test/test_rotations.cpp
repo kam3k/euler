@@ -8,33 +8,58 @@
 
 using namespace euler;
 
+static const double TOLERANCE = 1e-6;
+
+template <std::size_t SIZE>
+bool approxEq(const std::array<double, SIZE>& lhs,
+              const std::array<double, SIZE>& rhs)
+{
+  for (std::size_t i = 0; i < SIZE; ++i)
+  {
+    if (std::abs(lhs[i] - rhs[i]) > TOLERANCE)
+    {
+      return false;
+    }
+  }
+  return true;
+}
+
+using Vector = std::array<double, 3>;
+
+Vector operator*(const RotationMatrix& R, const Vector& v)
+{
+  return {R[0] * v[0] + R[1] * v[1] + R[2] * v[2],
+          R[3] * v[0] + R[4] * v[1] + R[5] * v[2],
+          R[6] * v[0] + R[7] * v[1] + R[8] * v[2]};
+}
+
 TEST_CASE("Identity")
 {
-  RotationMatrix R_expect = RotationMatrix::Identity(3, 3);
-  RotationMatrix R_actual = getRotationMatrix(
+  RotationMatrix R_expect = {1.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 1.0};
+  RotationMatrix R_actual = toRotationMatrix(
       "xyz", {0, 0, 0}, {Order::INTRINSIC, Direction::PASSIVE});
-  CHECK(R_actual.isApprox(R_expect));
-  R_actual = getRotationMatrix("xyz", {0, 0, 0},
-                               {Order::EXTRINSIC, Direction::PASSIVE});
-  CHECK(R_actual.isApprox(R_expect));
-  R_actual = getRotationMatrix("xyz", {0, 0, 0},
-                               {Order::INTRINSIC, Direction::ACTIVE});
-  CHECK(R_actual.isApprox(R_expect));
-  R_actual = getRotationMatrix("xyz", {0, 0, 0},
-                               {Order::EXTRINSIC, Direction::ACTIVE});
-  CHECK(R_actual.isApprox(R_expect));
-  R_actual = getRotationMatrix("yzy", {0, 0, 0},
-                               {Order::INTRINSIC, Direction::PASSIVE});
-  CHECK(R_actual.isApprox(R_expect));
-  R_actual = getRotationMatrix("yzy", {0, 0, 0},
-                               {Order::EXTRINSIC, Direction::PASSIVE});
-  CHECK(R_actual.isApprox(R_expect));
-  R_actual = getRotationMatrix("yzy", {0, 0, 0},
-                               {Order::INTRINSIC, Direction::ACTIVE});
-  CHECK(R_actual.isApprox(R_expect));
-  R_actual = getRotationMatrix("yzy", {0, 0, 0},
-                               {Order::EXTRINSIC, Direction::ACTIVE});
-  CHECK(R_actual.isApprox(R_expect));
+  CHECK(approxEq(R_actual, R_expect));
+  R_actual = toRotationMatrix("xyz", {0, 0, 0},
+                              {Order::EXTRINSIC, Direction::PASSIVE});
+  CHECK(approxEq(R_actual, R_expect));
+  R_actual =
+      toRotationMatrix("xyz", {0, 0, 0}, {Order::INTRINSIC, Direction::ACTIVE});
+  CHECK(approxEq(R_actual, R_expect));
+  R_actual =
+      toRotationMatrix("xyz", {0, 0, 0}, {Order::EXTRINSIC, Direction::ACTIVE});
+  CHECK(approxEq(R_actual, R_expect));
+  R_actual = toRotationMatrix("yzy", {0, 0, 0},
+                              {Order::INTRINSIC, Direction::PASSIVE});
+  CHECK(approxEq(R_actual, R_expect));
+  R_actual = toRotationMatrix("yzy", {0, 0, 0},
+                              {Order::EXTRINSIC, Direction::PASSIVE});
+  CHECK(approxEq(R_actual, R_expect));
+  R_actual =
+      toRotationMatrix("yzy", {0, 0, 0}, {Order::INTRINSIC, Direction::ACTIVE});
+  CHECK(approxEq(R_actual, R_expect));
+  R_actual =
+      toRotationMatrix("yzy", {0, 0, 0}, {Order::EXTRINSIC, Direction::ACTIVE});
+  CHECK(approxEq(R_actual, R_expect));
 }
 
 TEST_CASE("Rotations about principal axes")
@@ -47,32 +72,30 @@ TEST_CASE("Rotations about principal axes")
   {
     SECTION("Active")
     {
-      RotationMatrix R_expect_active;
-      R_expect_active << 1, 0, 0, 0, c, -s, 0, s, c;
-      RotationMatrix R_actual_active = getRotationMatrix(
+      RotationMatrix R_expect_active = {1.0, 0.0, 0.0, 0.0, c, -s, 0.0, s, c};
+      RotationMatrix R_actual_active = toRotationMatrix(
           "xyz", {theta, 0, 0}, {Order::INTRINSIC, Direction::ACTIVE});
-      CHECK(R_actual_active.isApprox(R_expect_active));
-      R_actual_active = getRotationMatrix(
-          "yxz", {0, theta, 0}, {Order::INTRINSIC, Direction::ACTIVE});
-      CHECK(R_actual_active.isApprox(R_expect_active));
-      R_actual_active = getRotationMatrix(
-          "zyx", {0, 0, theta}, {Order::INTRINSIC, Direction::ACTIVE});
-      CHECK(R_actual_active.isApprox(R_expect_active));
+      CHECK(approxEq(R_actual_active, R_expect_active));
+      R_actual_active = toRotationMatrix("yxz", {0, theta, 0},
+                                         {Order::INTRINSIC, Direction::ACTIVE});
+      CHECK(approxEq(R_actual_active, R_expect_active));
+      R_actual_active = toRotationMatrix("zyx", {0, 0, theta},
+                                         {Order::INTRINSIC, Direction::ACTIVE});
+      CHECK(approxEq(R_actual_active, R_expect_active));
     }
 
     SECTION("Passive")
     {
-      RotationMatrix R_expect_passive;
-      R_expect_passive << 1, 0, 0, 0, c, s, 0, -s, c;
-      RotationMatrix R_actual_passive = getRotationMatrix(
+      RotationMatrix R_expect_passive = {1.0, 0.0, 0.0, 0.0, c, s, 0.0, -s, c};
+      RotationMatrix R_actual_passive = toRotationMatrix(
           "xyz", {theta, 0, 0}, {Order::INTRINSIC, Direction::PASSIVE});
-      CHECK(R_actual_passive.isApprox(R_expect_passive));
-      R_actual_passive = getRotationMatrix(
+      CHECK(approxEq(R_actual_passive, R_expect_passive));
+      R_actual_passive = toRotationMatrix(
           "yxz", {0, theta, 0}, {Order::INTRINSIC, Direction::PASSIVE});
-      CHECK(R_actual_passive.isApprox(R_expect_passive));
-      R_actual_passive = getRotationMatrix(
+      CHECK(approxEq(R_actual_passive, R_expect_passive));
+      R_actual_passive = toRotationMatrix(
           "zyx", {0, 0, theta}, {Order::INTRINSIC, Direction::PASSIVE});
-      CHECK(R_actual_passive.isApprox(R_expect_passive));
+      CHECK(approxEq(R_actual_passive, R_expect_passive));
     }
   }
 
@@ -80,32 +103,30 @@ TEST_CASE("Rotations about principal axes")
   {
     SECTION("Active")
     {
-      RotationMatrix R_expect_active;
-      R_expect_active << c, 0, s, 0, 1, 0, -s, 0, c;
-      RotationMatrix R_actual_active = getRotationMatrix(
+      RotationMatrix R_expect_active = {c, 0.0, s, 0.0, 1.0, 0.0, -s, 0.0, c};
+      RotationMatrix R_actual_active = toRotationMatrix(
           "yzx", {theta, 0, 0}, {Order::INTRINSIC, Direction::ACTIVE});
-      CHECK(R_actual_active.isApprox(R_expect_active));
-      R_actual_active = getRotationMatrix(
-          "xyz", {0, theta, 0}, {Order::INTRINSIC, Direction::ACTIVE});
-      CHECK(R_actual_active.isApprox(R_expect_active));
-      R_actual_active = getRotationMatrix(
-          "zxy", {0, 0, theta}, {Order::INTRINSIC, Direction::ACTIVE});
-      CHECK(R_actual_active.isApprox(R_expect_active));
+      CHECK(approxEq(R_actual_active, R_expect_active));
+      R_actual_active = toRotationMatrix("xyz", {0, theta, 0},
+                                         {Order::INTRINSIC, Direction::ACTIVE});
+      CHECK(approxEq(R_actual_active, R_expect_active));
+      R_actual_active = toRotationMatrix("zxy", {0, 0, theta},
+                                         {Order::INTRINSIC, Direction::ACTIVE});
+      CHECK(approxEq(R_actual_active, R_expect_active));
     }
 
     SECTION("Passive")
     {
-      RotationMatrix R_expect_passive;
-      R_expect_passive << c, 0, -s, 0, 1, 0, s, 0, c;
-      RotationMatrix R_actual_passive = getRotationMatrix(
+      RotationMatrix R_expect_passive = {c, 0.0, -s, 0.0, 1.0, 0.0, s, 0.0, c};
+      RotationMatrix R_actual_passive = toRotationMatrix(
           "yzx", {theta, 0, 0}, {Order::INTRINSIC, Direction::PASSIVE});
-      CHECK(R_actual_passive.isApprox(R_expect_passive));
-      R_actual_passive = getRotationMatrix(
+      CHECK(approxEq(R_actual_passive, R_expect_passive));
+      R_actual_passive = toRotationMatrix(
           "xyz", {0, theta, 0}, {Order::INTRINSIC, Direction::PASSIVE});
-      CHECK(R_actual_passive.isApprox(R_expect_passive));
-      R_actual_passive = getRotationMatrix(
+      CHECK(approxEq(R_actual_passive, R_expect_passive));
+      R_actual_passive = toRotationMatrix(
           "zxy", {0, 0, theta}, {Order::INTRINSIC, Direction::PASSIVE});
-      CHECK(R_actual_passive.isApprox(R_expect_passive));
+      CHECK(approxEq(R_actual_passive, R_expect_passive));
     }
   }
 
@@ -113,32 +134,30 @@ TEST_CASE("Rotations about principal axes")
   {
     SECTION("Active")
     {
-      RotationMatrix R_expect_active;
-      R_expect_active << c, -s, 0, s, c, 0, 0, 0, 1;
-      RotationMatrix R_actual_active = getRotationMatrix(
+      RotationMatrix R_expect_active = {c, -s, 0.0, s, c, 0.0, 0.0, 0.0, 1.0};
+      RotationMatrix R_actual_active = toRotationMatrix(
           "zyx", {theta, 0, 0}, {Order::INTRINSIC, Direction::ACTIVE});
-      CHECK(R_actual_active.isApprox(R_expect_active));
-      R_actual_active = getRotationMatrix(
-          "xzy", {0, theta, 0}, {Order::INTRINSIC, Direction::ACTIVE});
-      CHECK(R_actual_active.isApprox(R_expect_active));
-      R_actual_active = getRotationMatrix(
-          "yxz", {0, 0, theta}, {Order::INTRINSIC, Direction::ACTIVE});
-      CHECK(R_actual_active.isApprox(R_expect_active));
+      CHECK(approxEq(R_actual_active, R_expect_active));
+      R_actual_active = toRotationMatrix("xzy", {0, theta, 0},
+                                         {Order::INTRINSIC, Direction::ACTIVE});
+      CHECK(approxEq(R_actual_active, R_expect_active));
+      R_actual_active = toRotationMatrix("yxz", {0, 0, theta},
+                                         {Order::INTRINSIC, Direction::ACTIVE});
+      CHECK(approxEq(R_actual_active, R_expect_active));
     }
 
     SECTION("Passive")
     {
-      RotationMatrix R_expect_passive;
-      R_expect_passive << c, s, 0, -s, c, 0, 0, 0, 1;
-      RotationMatrix R_actual_passive = getRotationMatrix(
+      RotationMatrix R_expect_passive = {c, s, 0.0, -s, c, 0.0, 0.0, 0.0, 1.0};
+      RotationMatrix R_actual_passive = toRotationMatrix(
           "zyx", {theta, 0, 0}, {Order::INTRINSIC, Direction::PASSIVE});
-      CHECK(R_actual_passive.isApprox(R_expect_passive));
-      R_actual_passive = getRotationMatrix(
+      CHECK(approxEq(R_actual_passive, R_expect_passive));
+      R_actual_passive = toRotationMatrix(
           "xzy", {0, theta, 0}, {Order::INTRINSIC, Direction::PASSIVE});
-      CHECK(R_actual_passive.isApprox(R_expect_passive));
-      R_actual_passive = getRotationMatrix(
+      CHECK(approxEq(R_actual_passive, R_expect_passive));
+      R_actual_passive = toRotationMatrix(
           "yxz", {0, 0, theta}, {Order::INTRINSIC, Direction::PASSIVE});
-      CHECK(R_actual_passive.isApprox(R_expect_passive));
+      CHECK(approxEq(R_actual_passive, R_expect_passive));
     }
   }
 }
@@ -146,9 +165,9 @@ TEST_CASE("Rotations about principal axes")
 TEST_CASE("Rotations of 90 degrees about each axis")
 {
   std::array<double, 3> angles = {M_PI / 2, M_PI / 2, M_PI / 2};
-  Eigen::Vector3d a(1, 0, 0);
-  Eigen::Vector3d b_expect;
-  Eigen::Vector3d b_actual;
+  Vector a = {1.0, 0.0, 0.0};
+  Vector b_expect;
+  Vector b_actual;
 
   SECTION("Intrinsic")
   {
@@ -159,19 +178,19 @@ TEST_CASE("Rotations of 90 degrees about each axis")
       SECTION("Active")
       {
         b_expect = {0, 0, 1};
-        b_actual = getRotationMatrix(sequence, angles,
-                                     {Order::INTRINSIC, Direction::ACTIVE}) *
+        b_actual = toRotationMatrix(sequence, angles,
+                                    {Order::INTRINSIC, Direction::ACTIVE}) *
                    a;
-        CHECK(b_actual.isApprox(b_expect));
+        CHECK(approxEq(b_actual, b_expect));
       }
 
       SECTION("Passive")
       {
         b_expect = {0, 0, 1};
-        b_actual = getRotationMatrix(sequence, angles,
-                                     {Order::INTRINSIC, Direction::PASSIVE}) *
+        b_actual = toRotationMatrix(sequence, angles,
+                                    {Order::INTRINSIC, Direction::PASSIVE}) *
                    a;
-        CHECK(b_actual.isApprox(b_expect));
+        CHECK(approxEq(b_actual, b_expect));
       }
     }
 
@@ -182,19 +201,19 @@ TEST_CASE("Rotations of 90 degrees about each axis")
       SECTION("Active")
       {
         b_expect = {0, 1, 0};
-        b_actual = getRotationMatrix(sequence, angles,
-                                     {Order::INTRINSIC, Direction::ACTIVE}) *
+        b_actual = toRotationMatrix(sequence, angles,
+                                    {Order::INTRINSIC, Direction::ACTIVE}) *
                    a;
-        CHECK(b_actual.isApprox(b_expect));
+        CHECK(approxEq(b_actual, b_expect));
       }
 
       SECTION("Passive")
       {
         b_expect = {0, 1, 0};
-        b_actual = getRotationMatrix(sequence, angles,
-                                     {Order::INTRINSIC, Direction::PASSIVE}) *
+        b_actual = toRotationMatrix(sequence, angles,
+                                    {Order::INTRINSIC, Direction::PASSIVE}) *
                    a;
-        CHECK(b_actual.isApprox(b_expect));
+        CHECK(approxEq(b_actual, b_expect));
       }
     }
 
@@ -205,19 +224,19 @@ TEST_CASE("Rotations of 90 degrees about each axis")
       SECTION("Active")
       {
         b_expect = {0, 0, -1};
-        b_actual = getRotationMatrix(sequence, angles,
-                                     {Order::INTRINSIC, Direction::ACTIVE}) *
+        b_actual = toRotationMatrix(sequence, angles,
+                                    {Order::INTRINSIC, Direction::ACTIVE}) *
                    a;
-        CHECK(b_actual.isApprox(b_expect));
+        CHECK(approxEq(b_actual, b_expect));
       }
 
       SECTION("Passive")
       {
         b_expect = {0, 0, 1};
-        b_actual = getRotationMatrix(sequence, angles,
-                                     {Order::INTRINSIC, Direction::PASSIVE}) *
+        b_actual = toRotationMatrix(sequence, angles,
+                                    {Order::INTRINSIC, Direction::PASSIVE}) *
                    a;
-        CHECK(b_actual.isApprox(b_expect));
+        CHECK(approxEq(b_actual, b_expect));
       }
     }
 
@@ -228,19 +247,19 @@ TEST_CASE("Rotations of 90 degrees about each axis")
       SECTION("Active")
       {
         b_expect = {0, 1, 0};
-        b_actual = getRotationMatrix(sequence, angles,
-                                     {Order::INTRINSIC, Direction::ACTIVE}) *
+        b_actual = toRotationMatrix(sequence, angles,
+                                    {Order::INTRINSIC, Direction::ACTIVE}) *
                    a;
-        CHECK(b_actual.isApprox(b_expect));
+        CHECK(approxEq(b_actual, b_expect));
       }
 
       SECTION("Passive")
       {
         b_expect = {0, -1, 0};
-        b_actual = getRotationMatrix(sequence, angles,
-                                     {Order::INTRINSIC, Direction::PASSIVE}) *
+        b_actual = toRotationMatrix(sequence, angles,
+                                    {Order::INTRINSIC, Direction::PASSIVE}) *
                    a;
-        CHECK(b_actual.isApprox(b_expect));
+        CHECK(approxEq(b_actual, b_expect));
       }
     }
 
@@ -251,19 +270,19 @@ TEST_CASE("Rotations of 90 degrees about each axis")
       SECTION("Active")
       {
         b_expect = {0, 1, 0};
-        b_actual = getRotationMatrix(sequence, angles,
-                                     {Order::INTRINSIC, Direction::ACTIVE}) *
+        b_actual = toRotationMatrix(sequence, angles,
+                                    {Order::INTRINSIC, Direction::ACTIVE}) *
                    a;
-        CHECK(b_actual.isApprox(b_expect));
+        CHECK(approxEq(b_actual, b_expect));
       }
 
       SECTION("Passive")
       {
         b_expect = {0, 1, 0};
-        b_actual = getRotationMatrix(sequence, angles,
-                                     {Order::INTRINSIC, Direction::PASSIVE}) *
+        b_actual = toRotationMatrix(sequence, angles,
+                                    {Order::INTRINSIC, Direction::PASSIVE}) *
                    a;
-        CHECK(b_actual.isApprox(b_expect));
+        CHECK(approxEq(b_actual, b_expect));
       }
     }
 
@@ -274,19 +293,19 @@ TEST_CASE("Rotations of 90 degrees about each axis")
       SECTION("Active")
       {
         b_expect = {0, 0, 1};
-        b_actual = getRotationMatrix(sequence, angles,
-                                     {Order::INTRINSIC, Direction::ACTIVE}) *
+        b_actual = toRotationMatrix(sequence, angles,
+                                    {Order::INTRINSIC, Direction::ACTIVE}) *
                    a;
-        CHECK(b_actual.isApprox(b_expect));
+        CHECK(approxEq(b_actual, b_expect));
       }
 
       SECTION("Passive")
       {
         b_expect = {0, 0, 1};
-        b_actual = getRotationMatrix(sequence, angles,
-                                     {Order::INTRINSIC, Direction::PASSIVE}) *
+        b_actual = toRotationMatrix(sequence, angles,
+                                    {Order::INTRINSIC, Direction::PASSIVE}) *
                    a;
-        CHECK(b_actual.isApprox(b_expect));
+        CHECK(approxEq(b_actual, b_expect));
       }
     }
 
@@ -297,19 +316,19 @@ TEST_CASE("Rotations of 90 degrees about each axis")
       SECTION("Active")
       {
         b_expect = {-1, 0, 0};
-        b_actual = getRotationMatrix(sequence, angles,
-                                     {Order::INTRINSIC, Direction::ACTIVE}) *
+        b_actual = toRotationMatrix(sequence, angles,
+                                    {Order::INTRINSIC, Direction::ACTIVE}) *
                    a;
-        CHECK(b_actual.isApprox(b_expect));
+        CHECK(approxEq(b_actual, b_expect));
       }
 
       SECTION("Passive")
       {
         b_expect = {-1, 0, 0};
-        b_actual = getRotationMatrix(sequence, angles,
-                                     {Order::INTRINSIC, Direction::PASSIVE}) *
+        b_actual = toRotationMatrix(sequence, angles,
+                                    {Order::INTRINSIC, Direction::PASSIVE}) *
                    a;
-        CHECK(b_actual.isApprox(b_expect));
+        CHECK(approxEq(b_actual, b_expect));
       }
     }
   }
@@ -323,19 +342,19 @@ TEST_CASE("Rotations of 90 degrees about each axis")
       SECTION("Active")
       {
         b_expect = {0, 0, -1};
-        b_actual = getRotationMatrix(sequence, angles,
-                                     {Order::EXTRINSIC, Direction::ACTIVE}) *
+        b_actual = toRotationMatrix(sequence, angles,
+                                    {Order::EXTRINSIC, Direction::ACTIVE}) *
                    a;
-        CHECK(b_actual.isApprox(b_expect));
+        CHECK(approxEq(b_actual, b_expect));
       }
 
       SECTION("Passive")
       {
         b_expect = {0, 0, 1};
-        b_actual = getRotationMatrix(sequence, angles,
-                                     {Order::EXTRINSIC, Direction::PASSIVE}) *
+        b_actual = toRotationMatrix(sequence, angles,
+                                    {Order::EXTRINSIC, Direction::PASSIVE}) *
                    a;
-        CHECK(b_actual.isApprox(b_expect));
+        CHECK(approxEq(b_actual, b_expect));
       }
     }
 
@@ -346,19 +365,19 @@ TEST_CASE("Rotations of 90 degrees about each axis")
       SECTION("Active")
       {
         b_expect = {0, 1, 0};
-        b_actual = getRotationMatrix(sequence, angles,
-                                     {Order::EXTRINSIC, Direction::ACTIVE}) *
+        b_actual = toRotationMatrix(sequence, angles,
+                                    {Order::EXTRINSIC, Direction::ACTIVE}) *
                    a;
-        CHECK(b_actual.isApprox(b_expect));
+        CHECK(approxEq(b_actual, b_expect));
       }
 
       SECTION("Passive")
       {
         b_expect = {0, -1, 0};
-        b_actual = getRotationMatrix(sequence, angles,
-                                     {Order::EXTRINSIC, Direction::PASSIVE}) *
+        b_actual = toRotationMatrix(sequence, angles,
+                                    {Order::EXTRINSIC, Direction::PASSIVE}) *
                    a;
-        CHECK(b_actual.isApprox(b_expect));
+        CHECK(approxEq(b_actual, b_expect));
       }
     }
 
@@ -369,19 +388,19 @@ TEST_CASE("Rotations of 90 degrees about each axis")
       SECTION("Active")
       {
         b_expect = {0, 0, 1};
-        b_actual = getRotationMatrix(sequence, angles,
-                                     {Order::EXTRINSIC, Direction::ACTIVE}) *
+        b_actual = toRotationMatrix(sequence, angles,
+                                    {Order::EXTRINSIC, Direction::ACTIVE}) *
                    a;
-        CHECK(b_actual.isApprox(b_expect));
+        CHECK(approxEq(b_actual, b_expect));
       }
 
       SECTION("Passive")
       {
         b_expect = {0, 0, 1};
-        b_actual = getRotationMatrix(sequence, angles,
-                                     {Order::EXTRINSIC, Direction::PASSIVE}) *
+        b_actual = toRotationMatrix(sequence, angles,
+                                    {Order::EXTRINSIC, Direction::PASSIVE}) *
                    a;
-        CHECK(b_actual.isApprox(b_expect));
+        CHECK(approxEq(b_actual, b_expect));
       }
     }
 
@@ -392,19 +411,19 @@ TEST_CASE("Rotations of 90 degrees about each axis")
       SECTION("Active")
       {
         b_expect = {0, 1, 0};
-        b_actual = getRotationMatrix(sequence, angles,
-                                     {Order::EXTRINSIC, Direction::ACTIVE}) *
+        b_actual = toRotationMatrix(sequence, angles,
+                                    {Order::EXTRINSIC, Direction::ACTIVE}) *
                    a;
-        CHECK(b_actual.isApprox(b_expect));
+        CHECK(approxEq(b_actual, b_expect));
       }
 
       SECTION("Passive")
       {
         b_expect = {0, 1, 0};
-        b_actual = getRotationMatrix(sequence, angles,
-                                     {Order::EXTRINSIC, Direction::PASSIVE}) *
+        b_actual = toRotationMatrix(sequence, angles,
+                                    {Order::EXTRINSIC, Direction::PASSIVE}) *
                    a;
-        CHECK(b_actual.isApprox(b_expect));
+        CHECK(approxEq(b_actual, b_expect));
       }
     }
 
@@ -415,19 +434,19 @@ TEST_CASE("Rotations of 90 degrees about each axis")
       SECTION("Active")
       {
         b_expect = {0, 1, 0};
-        b_actual = getRotationMatrix(sequence, angles,
-                                     {Order::EXTRINSIC, Direction::ACTIVE}) *
+        b_actual = toRotationMatrix(sequence, angles,
+                                    {Order::EXTRINSIC, Direction::ACTIVE}) *
                    a;
-        CHECK(b_actual.isApprox(b_expect));
+        CHECK(approxEq(b_actual, b_expect));
       }
 
       SECTION("Passive")
       {
         b_expect = {0, 1, 0};
-        b_actual = getRotationMatrix(sequence, angles,
-                                     {Order::EXTRINSIC, Direction::PASSIVE}) *
+        b_actual = toRotationMatrix(sequence, angles,
+                                    {Order::EXTRINSIC, Direction::PASSIVE}) *
                    a;
-        CHECK(b_actual.isApprox(b_expect));
+        CHECK(approxEq(b_actual, b_expect));
       }
     }
 
@@ -438,19 +457,19 @@ TEST_CASE("Rotations of 90 degrees about each axis")
       SECTION("Active")
       {
         b_expect = {0, 0, 1};
-        b_actual = getRotationMatrix(sequence, angles,
-                                     {Order::EXTRINSIC, Direction::ACTIVE}) *
+        b_actual = toRotationMatrix(sequence, angles,
+                                    {Order::EXTRINSIC, Direction::ACTIVE}) *
                    a;
-        CHECK(b_actual.isApprox(b_expect));
+        CHECK(approxEq(b_actual, b_expect));
       }
 
       SECTION("Passive")
       {
         b_expect = {0, 0, 1};
-        b_actual = getRotationMatrix(sequence, angles,
-                                     {Order::EXTRINSIC, Direction::PASSIVE}) *
+        b_actual = toRotationMatrix(sequence, angles,
+                                    {Order::EXTRINSIC, Direction::PASSIVE}) *
                    a;
-        CHECK(b_actual.isApprox(b_expect));
+        CHECK(approxEq(b_actual, b_expect));
       }
     }
 
@@ -461,19 +480,19 @@ TEST_CASE("Rotations of 90 degrees about each axis")
       SECTION("Active")
       {
         b_expect = {-1, 0, 0};
-        b_actual = getRotationMatrix(sequence, angles,
-                                     {Order::EXTRINSIC, Direction::ACTIVE}) *
+        b_actual = toRotationMatrix(sequence, angles,
+                                    {Order::EXTRINSIC, Direction::ACTIVE}) *
                    a;
-        CHECK(b_actual.isApprox(b_expect));
+        CHECK(approxEq(b_actual, b_expect));
       }
 
       SECTION("Passive")
       {
         b_expect = {-1, 0, 0};
-        b_actual = getRotationMatrix(sequence, angles,
-                                     {Order::EXTRINSIC, Direction::PASSIVE}) *
+        b_actual = toRotationMatrix(sequence, angles,
+                                    {Order::EXTRINSIC, Direction::PASSIVE}) *
                    a;
-        CHECK(b_actual.isApprox(b_expect));
+        CHECK(approxEq(b_actual, b_expect));
       }
     }
   }
@@ -488,25 +507,25 @@ TEST_CASE("General rotations")
 
     RotationMatrix R_expect;
     // clang-format off
-    R_expect << 0.7860912, -0.0549689,  -0.6156615,
+    R_expect = {0.7860912, -0.0549689,  -0.6156615,
                -0.0487127,  0.9874306,  -0.1503595,
-                0.616188,   0.1481869,   0.7735327;
+                0.616188,   0.1481869,   0.7735327};
     // clang-format on
 
     RotationMatrix R_actual =
-        getRotationMatrix("xyz", angles, {Order::INTRINSIC, Direction::ACTIVE});
-    CHECK(R_actual.isApprox(R_expect, 1e-6));
+        toRotationMatrix("xyz", angles, {Order::INTRINSIC, Direction::ACTIVE});
+    CHECK(approxEq(R_actual, R_expect));
 
     // Order reversed, but extrinsic should give same solution
-    R_actual = getRotationMatrix("zyx", {angles[2], angles[1], angles[0]},
-                                 {Order::EXTRINSIC, Direction::ACTIVE});
-    CHECK(R_actual.isApprox(R_expect, 1e-6));
+    R_actual = toRotationMatrix("zyx", {angles[2], angles[1], angles[0]},
+                                {Order::EXTRINSIC, Direction::ACTIVE});
+    CHECK(approxEq(R_actual, R_expect));
 
     // Transpose should give passive solution
-    R_expect.transposeInPlace();
-    R_actual = getRotationMatrix("xyz", angles,
-                                 {Order::INTRINSIC, Direction::PASSIVE});
-    CHECK(R_actual.isApprox(R_expect, 1e-6));
+    R_expect = transpose(R_expect);
+    R_actual =
+        toRotationMatrix("xyz", angles, {Order::INTRINSIC, Direction::PASSIVE});
+    CHECK(approxEq(R_actual, R_expect));
   }
 
   SECTION("Extrinsic")
@@ -516,61 +535,44 @@ TEST_CASE("General rotations")
 
     RotationMatrix R_expect;
     // clang-format off
-    R_expect << 0.786091,  -0.185662,  -0.589568,
+    R_expect = {0.786091,  -0.185662,  -0.589568,
                 0.0549689,  0.971041,  -0.232502,
-                0.615661,   0.15036,    0.773533;
+                0.615661,   0.15036,    0.773533};
     // clang-format on
 
     RotationMatrix R_actual =
-        getRotationMatrix("xyz", angles, {Order::EXTRINSIC, Direction::ACTIVE});
-    CHECK(R_actual.isApprox(R_expect, 1e-6));
+        toRotationMatrix("xyz", angles, {Order::EXTRINSIC, Direction::ACTIVE});
+    CHECK(approxEq(R_actual, R_expect));
 
     // Order reversed, but intrinsic should give same solution
-    R_actual = getRotationMatrix("zyx", {angles[2], angles[1], angles[0]},
-                                 {Order::INTRINSIC, Direction::ACTIVE});
-    CHECK(R_actual.isApprox(R_expect, 1e-6));
+    R_actual = toRotationMatrix("zyx", {angles[2], angles[1], angles[0]},
+                                {Order::INTRINSIC, Direction::ACTIVE});
+    CHECK(approxEq(R_actual, R_expect));
 
     // Transpose should give passive solution
-    R_expect.transposeInPlace();
-    R_actual = getRotationMatrix("xyz", angles,
-                                 {Order::EXTRINSIC, Direction::PASSIVE});
-    CHECK(R_actual.isApprox(R_expect, 1e-6));
+    R_expect = transpose(R_expect);
+    R_actual =
+        toRotationMatrix("xyz", angles, {Order::EXTRINSIC, Direction::PASSIVE});
+    CHECK(approxEq(R_actual, R_expect));
   }
 }
 
 TEST_CASE("Quaternions")
 {
+  // Just ensure that conversion from rotation matrices to unit quaternions is
+  // correct
+
   // Identity
-  Quaternion q_expect = Quaternion::Identity();
-  Quaternion q_actual =
-      getQuaternion("xyz", {0, 0, 0}, {Order::INTRINSIC, Direction::ACTIVE});
-  CHECK(q_actual.isApprox(q_expect));
+  RotationMatrix R = {1.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 1.0};
+  Quaternion q_expect = {1.0, 0.0, 0.0, 0.0};
+  auto q_actual = toQuaternion(R);
+  CHECK(approxEq(q_actual, q_expect));
 
-  // Conversion to/from rotation matrix
-  q_expect = {3.1, -4.3, -11.2, 9.3};
-  q_expect.normalize();
-  q_actual = getQuaternion(getRotationMatrix(q_expect));
-  if (q_actual.w() < 0)
-  {
-    q_actual.w() *= -1;
-    q_actual.x() *= -1;
-    q_actual.y() *= -1;
-    q_actual.z() *= -1;
-  }
-  CHECK(q_actual.isApprox(q_expect, 1e-6));
-
-  // General rotation
-  q_expect = {0.8646213841619719, -0.19108049297037485, 0.2728232952874746,
-              -0.3761456590265506};
-  q_actual = getQuaternion(
-      "yzx", {30 * M_PI / 180, -49 * M_PI / 180, -11 * M_PI / 180},
-      {Order::INTRINSIC, Direction::ACTIVE});
-  if (q_actual.w() < 0)
-  {
-    q_actual.w() *= -1;
-    q_actual.x() *= -1;
-    q_actual.y() *= -1;
-    q_actual.z() *= -1;
-  }
-  CHECK(q_actual.isApprox(q_expect, 1e-6));
+  // Random case verified with converter at
+  // https://www.andre-gaschler.com/rotationconverter/
+  R = {0.9590657,  0.2713668,  0.0809514, -0.1991297, 0.8495061,
+       -0.4885557, -0.2013465, 0.4524372, 0.8687693};
+  q_expect = {0.9588197, 0.2453519, 0.0736056, -0.1226759};
+  q_actual = toQuaternion(R);
+  CHECK(approxEq(q_actual, q_expect));
 }

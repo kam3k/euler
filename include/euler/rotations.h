@@ -1,8 +1,6 @@
 #ifndef EULER_ROTATIONS_H
 #define EULER_ROTATIONS_H
 
-#include <Eigen/Dense>
-
 #include <array>
 #include <ostream>
 #include <string>
@@ -15,11 +13,11 @@ namespace euler
   /// Euler angles in the same order as the sequence
   using Angles = std::array<double, 3>;
 
-  /// Always orthnonormal 3x3 rotation matrix
-  using RotationMatrix = Eigen::Matrix3d;
+  /// 3x3 roation matrix stored in row-major order
+  using RotationMatrix = std::array<double, 9>;
 
-  /// Always normalized (i.e., unit quaternion)
-  using Quaternion = Eigen::Quaterniond;
+  /// Unit quaternion stored in w, x, y, z order
+  using Quaternion = std::array<double, 4>;
 
   /**
    * @brief Order of rotation
@@ -49,8 +47,28 @@ namespace euler
     const Direction direction;
   };
 
+  /** 
+   * @brief Multiplication operation of two rotation matrices
+   * 
+   * @param[in] lhs Left-hand side matrix
+   * @param[in] rhs Right-hand side matrix
+   * 
+   * @return Rotation matrix resulting from lhs * rhs
+   */
+  RotationMatrix operator*(const RotationMatrix& lhs,
+                           const RotationMatrix& rhs);
+
+  /** 
+   * @brief Transpose of rotation matrix (same as inverse)
+   * 
+   * @param[in] R Rotation matrix to transpose
+   * 
+   * @return Transpose of R
+   */
+  RotationMatrix transpose(const RotationMatrix& R);
+
   /**
-   * @brief Calculates a rotation matrix.
+   * @brief Converts an euler angle sequence to a rotation matrix
    *
    * @param[in] sequence The sequence of principal axes (e.g., xyz, zxz, etc.)
    * @param[in] angles The three Euler angles in the same order as the sequence
@@ -58,41 +76,21 @@ namespace euler
    *
    * @return The resulting rotation matrix
    */
-  RotationMatrix getRotationMatrix(const Sequence& sequence,
-                                   const Angles& angles, Convention convention);
+  RotationMatrix toRotationMatrix(const Sequence& sequence,
+                                  const Angles& angles, Convention convention);
 
   /**
-   * @brief Converts a quaternion to a rotation matrix. Normalizes the
-   * quaternion first.
+   * @brief Converts a rotation matrix (assumed to be orthonormal) to the unit
+   * quaternion that parametizes the equivalent rotation
    *
-   * @param[in] q A quaternion representing a rotation
+   * @details Uses algorithm suggested by Christian here: 
+   * http://www.euclideanspace.com/maths/geometry/rotations/conversions/matrixToQuaternion/index.htm
    *
-   * @return A rotation matrix representing the same rotation as the input
-   * quaternion
+   * @param[in] R Rotation matrix to convert to a unit quaternion
+   *
+   * @return Unit quaternion parameterization of R
    */
-  RotationMatrix getRotationMatrix(const Quaternion& q);
-
-  /**
-   * @brief Calculates a unit quaternion representing a rotation.
-   *
-   * @param[in] sequence The sequence of principal axes (e.g., xyz, zxz, etc.)
-   * @param[in] angles The three Euler angles in the same order as the sequence
-   * @param[in] convention The convention used to generate the rotation matrix
-   *
-   * @return The resulting unit quaternion
-   */
-  Quaternion getQuaternion(const Sequence& sequence, const Angles& angles,
-                           Convention convention);
-
-  /**
-   * @brief Converts a rotation matrix to a unit quaternion.
-   *
-   * @param[in] R A rotation matrix
-   *
-   * @return A unit quaternion representing the same rotation as the input
-   * rotation matrix
-   */
-  Quaternion getQuaternion(const RotationMatrix& R);
+  Quaternion toQuaternion(const RotationMatrix& R);
 } // namespace euler
 
 #endif
