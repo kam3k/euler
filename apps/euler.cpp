@@ -9,8 +9,7 @@
 
 using namespace euler;
 
-int main(int argc, char* argv[])
-{
+int main(int argc, char* argv[]) {
   // Create the parser
   // clang-format off
   argagg::parser arg_parser {{
@@ -70,20 +69,15 @@ int main(int argc, char* argv[])
 
   // Parse the arguments
   argagg::parser_results args;
-  try
-  {
+  try {
     args = arg_parser.parse(argc, argv);
-  }
-  catch (const std::exception& e)
-  {
-    std::cerr << "Error: Invalid arguments.\n\n"
-              << usage.str() << arg_parser << std::endl;
+  } catch (const std::exception& e) {
+    std::cerr << "Error: Invalid arguments.\n\n" << usage.str() << arg_parser << std::endl;
     return -1;
   }
 
   // If the help flag was specified, show usage and exit
-  if (args["help"])
-  {
+  if (args["help"]) {
     std::cerr << usage.str() << arg_parser << std::endl;
     return 0;
   }
@@ -99,43 +93,33 @@ int main(int argc, char* argv[])
 
   // Get sequence
   const auto sequence = args["sequence"].as<std::string>("zyx");
-  if (!isSequenceValid(sequence))
-  {
-    std::cerr << "Error: Invalid sequence.\n\n"
-              << usage.str() << arg_parser << std::endl;
+  if (!isSequenceValid(sequence)) {
+    std::cerr << "Error: Invalid sequence.\n\n" << usage.str() << arg_parser << std::endl;
     return -1;
   }
 
   // Get angles
-  if (args.count() != 3)
-  {
+  if (args.count() != 3) {
     std::cerr << "Error: Must provide exactly three angles.\n\n"
               << usage.str() << arg_parser << std::endl;
     return -1;
   }
   Angles angles;
-  try
-  {
-    angles = {std::stod(args.pos[0]), std::stod(args.pos[1]),
-              std::stod(args.pos[2])};
-  }
-  catch (const std::invalid_argument&)
-  {
+  try {
+    angles = {std::stod(args.pos[0]), std::stod(args.pos[1]), std::stod(args.pos[2])};
+  } catch (const std::invalid_argument&) {
     std::cerr << "Error: Invalid angles, must be three real numbers.\n\n"
               << usage.str() << arg_parser << std::endl;
     return -1;
   }
 
   // Convert / verify angles
-  if (!radians)
-  {
-    std::for_each(angles.begin(), angles.end(),
-                  [](double& a) { a *= M_PI / 180; });
+  if (!radians) {
+    std::for_each(angles.begin(), angles.end(), [](double& a) { a *= M_PI / 180; });
   }
 
   // Create rotation matrix and quaternion from arguments
-  const RotationMatrix R =
-      toRotationMatrix(sequence, angles, {order, direction});
+  const RotationMatrix R = toRotationMatrix(sequence, angles, {order, direction});
   const Quaternion q = toQuaternion(R);
 
   // Display results
