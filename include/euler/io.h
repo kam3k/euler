@@ -19,21 +19,26 @@ namespace euler
    */
   bool isSequenceValid(const Sequence& sequence);
 
-  /**
-   * @brief Prints a rotation matrix to the console nicely (i.e., reasonable
-   * number of decimal places, columns are aligned).
-   *
-   * @param[in] R The rotation matrix to print.
+  /** 
+   * @brief Pretty print the element of a quaternion
+   * 
+   * @param[in] os Stream to print in
+   * @param[in] q Quaternion to print
+   * 
+   * @return Update stream
    */
-  void prettyPrint(const RotationMatrix& R);
+  std::ostream& operator<<(std::ostream& os, const euler::Quaternion& q);
 
-  /**
-   * @brief Print a quaternion to the console nicely (i.e., reasonable number of
-   * decimal places, the name of each element is given).
-   *
-   * @param[in] q The quaternion to print.
+  /** 
+   * @brief Pretty print the element of a rotation matrix
+   * 
+   * @param[in] os Stream to print in
+   * @param[in] q Rotation matrix to print
+   * 
+   * @return Update stream
    */
-  void prettyPrint(const Quaternion& q);
+  std::ostream& operator<<(std::ostream& os, const euler::RotationMatrix& R);
+
 } // namespace euler
 
 #endif

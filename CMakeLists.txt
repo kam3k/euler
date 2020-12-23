@@ -7,13 +7,15 @@ set(CMAKE_CXX_FLAGS "-std=c++11")
 
 # Library
 set(SOURCES
-    src/io.cpp
-    src/rotations.cpp
-    )
+  src/io.cpp
+  src/rotations.cpp
+)
+
 add_library(euler_rotations ${SOURCES})
+
 target_include_directories(euler_rotations PUBLIC 
-    include
-    )
+  include
+)
 
 # Application
 add_executable(euler apps/euler.cpp)

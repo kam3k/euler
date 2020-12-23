@@ -4,7 +4,10 @@
 #include <argagg/argagg.hpp>
 
 #include <cmath>
+#include <iomanip>
 #include <iostream>
+
+using namespace euler;
 
 int main(int argc, char* argv[])
 {
@@ -20,31 +23,19 @@ int main(int argc, char* argv[])
     {
       "radians", 
       {"-r", "--radians"}, 
-      "Use radians instead of degrees for input angles (default: false)", 
-      0
-    },
-    {
-      "intrinsic", 
-      {"-i", "--intrinsic"}, 
-      "Use intrinsic elemental rotations (incompatible with -e; default: true)", 
+      "Use radians rather than degrees for input angles", 
       0
     },
     {
       "extrinsic", 
       {"-e", "--extrinsic"}, 
-      "Use extrinsic elemental rotations (incompatible with -i; default: false)", 
-      0
-    },
-    {
-      "active", 
-      {"-a", "--active"}, 
-      "Specify an active rotation (incompatible with -p; default: true)", 
+      "Use extrinsic rather than intrinsic elemental rotations", 
       0
     },
     {
       "passive", 
       {"-p", "--passive"}, 
-      "Specify a passive rotation (incompatible with -a; default: false)", 
+      "Specify a passive rather than active rotation", 
       0
     },
     {
@@ -59,17 +50,23 @@ int main(int argc, char* argv[])
 
   // Define usage text
   std::ostringstream usage;
-  usage << "Usage: euler "
-        << "[-r | --radians] [-i | --intrinsic | -e | --extrinsic]\n\t"
-           "[-a | --active | -p | --passive] [-s S | --sequence=S]\n\t-- ANGLE "
-           "ANGLE ANGLE\n\n"
-           "Calculates rotation matrix and quaternion for given Euler angle "
-           "sequence. The\nrotation matrix pre-multiplies vectors in "
-           "a right-handed coordinate frame.\n\n"
-           "Examples:\n\teuler -- 20 -10 35\n\teuler -ep -- 11.1 23.9 "
-           "-129.4\n\teuler -ea -s yzy -- 41.2 -55.5 -97.8\n\teuler -p -s zxy "
-           "-- -176.234 -0.231 44.399\n\teuler -rpi -s xzx -- 0.21 1.16 "
-           "-2.81\n\n";
+  // clang-format off
+  usage << "Usage: euler [-r | --radians] [-e | --extrinsic] [-p | --passive]\n"
+        << std::setw(57) << std::right
+        << "[-s S | --sequence=S] -- ANGLE ANGLE ANGLE\n\n";
+
+  usage << "Calculates rotation matrix and quaternion for given Euler angle sequence.\n"
+           "The rotation matrix pre-multiplies vectors in a right-handed coordinate frame.\n"
+           "By default the sequence of angles are intepreted to be in degrees and are applied\n"
+           "in intrinsic order using the zyx sequence.\n\n";
+
+  usage << "Examples:\n"
+           "    euler -- 20 -10 35\n"
+           "    euler -ep -- 11.1 23.9 -129.4\n"
+           "    euler -e -s yzy -- 41.2 -55.5 -97.8\n"
+           "    euler -p -s zxy -- -176.234 -0.231 44.399\n"
+           "    euler -rpe -s xzx -- 0.21 1.16 -2.81\n\n";
+  // clang-format on
 
   // Parse the arguments
   argagg::parser_results args;
@@ -79,7 +76,7 @@ int main(int argc, char* argv[])
   }
   catch (const std::exception& e)
   {
-    std::cerr << "Error: Invalid inputs.\n\n"
+    std::cerr << "Error: Invalid arguments.\n\n"
               << usage.str() << arg_parser << std::endl;
     return -1;
   }
@@ -94,31 +91,15 @@ int main(int argc, char* argv[])
   // Get radians / degrees
   const bool radians = args["radians"];
 
-  // Get intrinsic / extrinsic
-  if (args["intrinsic"] && args["extrinsic"])
-  {
-    std::cerr << "Error: Cannot use both intrinsic and extrinsic elemental "
-                 "rotations.\n\n"
-              << usage.str() << arg_parser << std::endl;
-    return -1;
-  }
-  const auto order =
-      args["extrinsic"] ? euler::Order::EXTRINSIC : euler::Order::INTRINSIC;
+  // Get order
+  const auto order = args["extrinsic"] ? Order::EXTRINSIC : Order::INTRINSIC;
 
   // Get active // passive
-  if (args["active"] && args["passive"])
-  {
-    std::cerr
-        << "Error: Cannot specify both an active and passive rotation.\n\n"
-        << usage.str() << arg_parser << std::endl;
-    return -1;
-  }
-  const auto direction =
-      args["passive"] ? euler::Direction::PASSIVE : euler::Direction::ACTIVE;
+  const auto direction = args["passive"] ? Direction::PASSIVE : Direction::ACTIVE;
 
   // Get sequence
   const auto sequence = args["sequence"].as<std::string>("zyx");
-  if (!euler::isSequenceValid(sequence))
+  if (!isSequenceValid(sequence))
   {
     std::cerr << "Error: Invalid sequence.\n\n"
               << usage.str() << arg_parser << std::endl;
@@ -132,7 +113,7 @@ int main(int argc, char* argv[])
               << usage.str() << arg_parser << std::endl;
     return -1;
   }
-  euler::Angles angles;
+  Angles angles;
   try
   {
     angles = {std::stod(args.pos[0]), std::stod(args.pos[1]),
@@ -153,15 +134,13 @@ int main(int argc, char* argv[])
   }
 
   // Create rotation matrix and quaternion from arguments
-  const euler::RotationMatrix R =
-      euler::toRotationMatrix(sequence, angles, {order, direction});
-  const euler::Quaternion q = euler::toQuaternion(R);
+  const RotationMatrix R =
+      toRotationMatrix(sequence, angles, {order, direction});
+  const Quaternion q = toQuaternion(R);
 
   // Display results
-  std::cout << std::endl;
-  euler::prettyPrint(R);
-  std::cout << std::endl;
-  euler::prettyPrint(q);
+  std::cout << "\nRotation Matrix:\n" << R << "\n";
+  std::cout << "\nQuaternion:\n" << q << "\n";
 
   return 0;
 }
