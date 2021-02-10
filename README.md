@@ -18,32 +18,29 @@ A command line utility that converts euler angles to rotation matrices and quate
 ## Usage
 The `--help` flag displays the usage below:
 ```
-$ euler [-r | --radians] [-i | --intrinsic | -e | --extrinsic]
-        [-a | --active | -p | --passive] [-s S | --sequence=S]
-        -- ANGLE ANGLE ANGLE
+Usage: euler [-r | --radians] [-e | --extrinsic] [-p | --passive]
+             [-s S | --sequence=S] -- ANGLE ANGLE ANGLE
 
-Calculates rotation matrix and quaternion for given Euler angle sequence. The
-rotation matrix pre-multiplies vectors in a right-handed coordinate frame.
+Calculates rotation matrix and quaternion for given Euler angle sequence.
+The rotation matrix pre-multiplies vectors in a right-handed coordinate frame.
+By default the sequence of angles are intepreted to be in degrees and are applied
+in intrinsic order using the zyx sequence.
 
 Examples:
-        euler -- 20 -10 35
-        euler -ep -- 11.1 23.9 -129.4
-        euler -ea -s yzy -- 41.2 -55.5 -97.8
-        euler -p -s zxy -- -176.234 -0.231 44.399
-        euler -rpi -s xzx -- 0.21 1.16 -2.81
+    euler -- 20 -10 35
+    euler --extrinsic --passive -- 11.1 23.9 -129.4
+    euler --extrinsic --sequence yzy -- 41.2 -55.5 -97.8
+    euler --passive --sequence zxy -- -176.234 -0.231 44.399
+    euler --radians --passive --extrinsic --sequence xzx -- 0.21 1.16 -2.81
 
     -h, --help
         Print help and exit
     -r, --radians
-        Use radians instead of degrees for input angles (default: false)
-    -i, --intrinsic
-        Use intrinsic elemental rotations (incompatible with -e; default: true)
+        Use radians rather than degrees for input angles
     -e, --extrinsic
-        Use extrinsic elemental rotations (incompatible with -i; default: false)
-    -a, --active
-        Specify an active rotation (incompatible with -p; default: true)
+        Use extrinsic rather than intrinsic elemental rotations
     -p, --passive
-        Specify a passive rotation (incompatible with -a; default: false)
+        Specify a passive rather than active rotation
     -s, --sequence
         The rotation sequence (possible values: xyz, xzy, yxz, yzx, zxy, zyx,
         xyx, xzx, yxy, yzy, zxz, zyz; default: zyx)
@@ -60,14 +57,14 @@ Rotation Matrix:
   0.1736  0.5649  0.8067
 
 Quaternion:
- w:  0.9311
- x:  0.3094
- y: -0.0298
- z:  0.1908
+  w:  0.9311
+  x:  0.3094
+  y: -0.0298
+  z:  0.1908
 ```
 Flags modify the default parameters; for example, one can instead specify that the rotation is composed extrinsically:
 ```
-$ euler -e -- 20 -10 35
+$ euler --extrinsic -- 20 -10 35
 
 Rotation Matrix:
   0.9254 -0.3368 -0.1736
@@ -75,14 +72,14 @@ Rotation Matrix:
   0.3298  0.4903  0.8067
 
 Quaternion:
- w:  0.9402
- x:  0.2806
- y: -0.1339
- z:  0.1392
+  w:  0.9402
+  x:  0.2806
+  y: -0.1339
+  z:  0.1392
 ```
 All configurable parameters can be explicitly provided. For example, below is an extrinsically composed, passive rotation using the "yzy" sequence:
 ```
-$ euler -ep -s yzy -- 11 -76 -143.2231
+$ euler --extrinsic --passive --sequence yzy -- 11 -76 -143.2231
 
 Rotation Matrix:
  -0.0760 -0.9525  0.2950
@@ -90,14 +87,14 @@ Rotation Matrix:
  -0.6247 -0.1851 -0.7586
 
 Quaternion:
- w:  0.3191
- x: -0.6002
- y:  0.7205
- z:  0.1373
+  w:  0.3191
+  x: -0.6002
+  y:  0.7205
+  z:  0.1373
 ```
 If desired, the input angles can be specified in radians and using scientific notation; for example:
 ```
-$ euler -rpi -s xzx 2.35e-1 1.16 2.81
+$ euler --radians --passive --sequence xzx -- 2.35e-1 1.16 2.81
 
 Rotation Matrix:
   0.3993  0.8916  0.2135
@@ -105,10 +102,10 @@ Rotation Matrix:
   0.2985  0.0937 -0.9498
 
 Quaternion:
- w: -0.0404
- x:  0.8355
- y:  0.5262
- z:  0.1532
+  w:  0.0404
+  x: -0.8355
+  y: -0.5262
+  z: -0.1532
 ```
 
 ## Installation
@@ -134,8 +131,8 @@ When you always choose the fixed frame axes, you are said to be constructing a r
 
 Interestingly (and this is often a point of confusion), you get the same result if you take an extrinsic sequence of rotations and apply them in the reverse-order intrinsically (and vice-versa). For example, suppose you rotated first about the x-axis by angle *a*, then about the fixed y-axis by angle *b*, and finally about the fixed z-axis by angle *c*. This is an extrinsic "xyz" sequence. You would get the same result if you instead performed an intrinsic "zyx" sequence; that is, first rotated about the z-axis by angle *c*, then about the new mobile y-axis by angle *b*, then about the new mobile x-axis by angle *a*. For angles of 10, -25, and 30 degrees for angles *a*, *b*, and *c*, respectively, the command line arguments passed to euler for these two cases is shown below. See [this excellent tutorial](https://www.mecademic.com/resources/Euler-angles/Euler-angles) by Mecademic for more details.
 ```
-$ euler -e -s xyz -- 10 -25 30
-$ euler -i -s zyx -- 30 -25 10
+$ euler --extrinsic --sequence xyz -- 10 -25 30
+$ euler --sequence zyx -- 30 -25 10
 ```
 In both cases, the resulting rotation matrix and quaternion are:
 ```
@@ -145,10 +142,10 @@ Rotation Matrix:
   0.4226  0.1574  0.8925
 
 Quaternion:
- w:  0.9346
- x:  0.1380
- y: -0.1862
- z:  0.2699
+  w:  0.9346
+  x:  0.1380
+  y: -0.1862
+  z:  0.2699
 ```
 Using the terms *intrinsic* or *extrinsic* only matter during construction of a rotation from a sequence of Euler angles. Put differently, once you have the final result, it doesn't make sense to say that a rotation is "intrinsic" or "extrinsic"; rather, these terms tell you how it was constructed from the given Euler angles.
 
