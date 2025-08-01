@@ -1,4 +1,5 @@
-#include <catch/catch.hpp>
+#define DOCTEST_CONFIG_IMPLEMENT_WITH_MAIN
+#include "doctest.h"
 
 #include <euler/io.h>
 #include <euler/rotations.h>
@@ -56,8 +57,8 @@ TEST_CASE("Rotations about principal axes") {
   const auto s = std::sin(theta);
   const auto c = std::cos(theta);
 
-  SECTION("Rotation about x-axis") {
-    SECTION("Active") {
+  SUBCASE("Rotation about x-axis") {
+    SUBCASE("Active") {
       RotationMatrix R_expect_active = {1.0, 0.0, 0.0, 0.0, c, -s, 0.0, s, c};
       RotationMatrix R_actual_active =
           toRotationMatrix("xyz", {theta, 0, 0}, {Order::INTRINSIC, Direction::ACTIVE});
@@ -70,7 +71,7 @@ TEST_CASE("Rotations about principal axes") {
       CHECK(approxEq(R_actual_active, R_expect_active));
     }
 
-    SECTION("Passive") {
+    SUBCASE("Passive") {
       RotationMatrix R_expect_passive = {1.0, 0.0, 0.0, 0.0, c, s, 0.0, -s, c};
       RotationMatrix R_actual_passive =
           toRotationMatrix("xyz", {theta, 0, 0}, {Order::INTRINSIC, Direction::PASSIVE});
@@ -84,8 +85,8 @@ TEST_CASE("Rotations about principal axes") {
     }
   }
 
-  SECTION("Rotation about y-axis") {
-    SECTION("Active") {
+  SUBCASE("Rotation about y-axis") {
+    SUBCASE("Active") {
       RotationMatrix R_expect_active = {c, 0.0, s, 0.0, 1.0, 0.0, -s, 0.0, c};
       RotationMatrix R_actual_active =
           toRotationMatrix("yzx", {theta, 0, 0}, {Order::INTRINSIC, Direction::ACTIVE});
@@ -98,7 +99,7 @@ TEST_CASE("Rotations about principal axes") {
       CHECK(approxEq(R_actual_active, R_expect_active));
     }
 
-    SECTION("Passive") {
+    SUBCASE("Passive") {
       RotationMatrix R_expect_passive = {c, 0.0, -s, 0.0, 1.0, 0.0, s, 0.0, c};
       RotationMatrix R_actual_passive =
           toRotationMatrix("yzx", {theta, 0, 0}, {Order::INTRINSIC, Direction::PASSIVE});
@@ -112,8 +113,8 @@ TEST_CASE("Rotations about principal axes") {
     }
   }
 
-  SECTION("Rotation about z-axis") {
-    SECTION("Active") {
+  SUBCASE("Rotation about z-axis") {
+    SUBCASE("Active") {
       RotationMatrix R_expect_active = {c, -s, 0.0, s, c, 0.0, 0.0, 0.0, 1.0};
       RotationMatrix R_actual_active =
           toRotationMatrix("zyx", {theta, 0, 0}, {Order::INTRINSIC, Direction::ACTIVE});
@@ -126,7 +127,7 @@ TEST_CASE("Rotations about principal axes") {
       CHECK(approxEq(R_actual_active, R_expect_active));
     }
 
-    SECTION("Passive") {
+    SUBCASE("Passive") {
       RotationMatrix R_expect_passive = {c, s, 0.0, -s, c, 0.0, 0.0, 0.0, 1.0};
       RotationMatrix R_actual_passive =
           toRotationMatrix("zyx", {theta, 0, 0}, {Order::INTRINSIC, Direction::PASSIVE});
@@ -147,113 +148,113 @@ TEST_CASE("Rotations of 90 degrees about each axis") {
   Vector b_expect;
   Vector b_actual;
 
-  SECTION("Intrinsic") {
-    SECTION("xyz") {
+  SUBCASE("Intrinsic") {
+    SUBCASE("xyz") {
       const auto sequence = "xyz";
 
-      SECTION("Active") {
+      SUBCASE("Active") {
         b_expect = {0, 0, 1};
         b_actual = toRotationMatrix(sequence, angles, {Order::INTRINSIC, Direction::ACTIVE}) * a;
         CHECK(approxEq(b_actual, b_expect));
       }
 
-      SECTION("Passive") {
+      SUBCASE("Passive") {
         b_expect = {0, 0, 1};
         b_actual = toRotationMatrix(sequence, angles, {Order::INTRINSIC, Direction::PASSIVE}) * a;
         CHECK(approxEq(b_actual, b_expect));
       }
     }
 
-    SECTION("yzx") {
+    SUBCASE("yzx") {
       const auto sequence = "yzx";
 
-      SECTION("Active") {
+      SUBCASE("Active") {
         b_expect = {0, 1, 0};
         b_actual = toRotationMatrix(sequence, angles, {Order::INTRINSIC, Direction::ACTIVE}) * a;
         CHECK(approxEq(b_actual, b_expect));
       }
 
-      SECTION("Passive") {
+      SUBCASE("Passive") {
         b_expect = {0, 1, 0};
         b_actual = toRotationMatrix(sequence, angles, {Order::INTRINSIC, Direction::PASSIVE}) * a;
         CHECK(approxEq(b_actual, b_expect));
       }
     }
 
-    SECTION("zyx") {
+    SUBCASE("zyx") {
       const auto sequence = "zyx";
 
-      SECTION("Active") {
+      SUBCASE("Active") {
         b_expect = {0, 0, -1};
         b_actual = toRotationMatrix(sequence, angles, {Order::INTRINSIC, Direction::ACTIVE}) * a;
         CHECK(approxEq(b_actual, b_expect));
       }
 
-      SECTION("Passive") {
+      SUBCASE("Passive") {
         b_expect = {0, 0, 1};
         b_actual = toRotationMatrix(sequence, angles, {Order::INTRINSIC, Direction::PASSIVE}) * a;
         CHECK(approxEq(b_actual, b_expect));
       }
     }
 
-    SECTION("xzy") {
+    SUBCASE("xzy") {
       const auto sequence = "xzy";
 
-      SECTION("Active") {
+      SUBCASE("Active") {
         b_expect = {0, 1, 0};
         b_actual = toRotationMatrix(sequence, angles, {Order::INTRINSIC, Direction::ACTIVE}) * a;
         CHECK(approxEq(b_actual, b_expect));
       }
 
-      SECTION("Passive") {
+      SUBCASE("Passive") {
         b_expect = {0, -1, 0};
         b_actual = toRotationMatrix(sequence, angles, {Order::INTRINSIC, Direction::PASSIVE}) * a;
         CHECK(approxEq(b_actual, b_expect));
       }
     }
 
-    SECTION("xyx") {
+    SUBCASE("xyx") {
       const auto sequence = "xyx";
 
-      SECTION("Active") {
+      SUBCASE("Active") {
         b_expect = {0, 1, 0};
         b_actual = toRotationMatrix(sequence, angles, {Order::INTRINSIC, Direction::ACTIVE}) * a;
         CHECK(approxEq(b_actual, b_expect));
       }
 
-      SECTION("Passive") {
+      SUBCASE("Passive") {
         b_expect = {0, 1, 0};
         b_actual = toRotationMatrix(sequence, angles, {Order::INTRINSIC, Direction::PASSIVE}) * a;
         CHECK(approxEq(b_actual, b_expect));
       }
     }
 
-    SECTION("zxz") {
+    SUBCASE("zxz") {
       const auto sequence = "zxz";
 
-      SECTION("Active") {
+      SUBCASE("Active") {
         b_expect = {0, 0, 1};
         b_actual = toRotationMatrix(sequence, angles, {Order::INTRINSIC, Direction::ACTIVE}) * a;
         CHECK(approxEq(b_actual, b_expect));
       }
 
-      SECTION("Passive") {
+      SUBCASE("Passive") {
         b_expect = {0, 0, 1};
         b_actual = toRotationMatrix(sequence, angles, {Order::INTRINSIC, Direction::PASSIVE}) * a;
         CHECK(approxEq(b_actual, b_expect));
       }
     }
 
-    SECTION("yzy") {
+    SUBCASE("yzy") {
       const auto sequence = "yzy";
 
-      SECTION("Active") {
+      SUBCASE("Active") {
         b_expect = {-1, 0, 0};
         b_actual = toRotationMatrix(sequence, angles, {Order::INTRINSIC, Direction::ACTIVE}) * a;
         CHECK(approxEq(b_actual, b_expect));
       }
 
-      SECTION("Passive") {
+      SUBCASE("Passive") {
         b_expect = {-1, 0, 0};
         b_actual = toRotationMatrix(sequence, angles, {Order::INTRINSIC, Direction::PASSIVE}) * a;
         CHECK(approxEq(b_actual, b_expect));
@@ -261,113 +262,113 @@ TEST_CASE("Rotations of 90 degrees about each axis") {
     }
   }
 
-  SECTION("Extrinsic") {
-    SECTION("xyz") {
+  SUBCASE("Extrinsic") {
+    SUBCASE("xyz") {
       const auto sequence = "xyz";
 
-      SECTION("Active") {
+      SUBCASE("Active") {
         b_expect = {0, 0, -1};
         b_actual = toRotationMatrix(sequence, angles, {Order::EXTRINSIC, Direction::ACTIVE}) * a;
         CHECK(approxEq(b_actual, b_expect));
       }
 
-      SECTION("Passive") {
+      SUBCASE("Passive") {
         b_expect = {0, 0, 1};
         b_actual = toRotationMatrix(sequence, angles, {Order::EXTRINSIC, Direction::PASSIVE}) * a;
         CHECK(approxEq(b_actual, b_expect));
       }
     }
 
-    SECTION("yzx") {
+    SUBCASE("yzx") {
       const auto sequence = "yzx";
 
-      SECTION("Active") {
+      SUBCASE("Active") {
         b_expect = {0, 1, 0};
         b_actual = toRotationMatrix(sequence, angles, {Order::EXTRINSIC, Direction::ACTIVE}) * a;
         CHECK(approxEq(b_actual, b_expect));
       }
 
-      SECTION("Passive") {
+      SUBCASE("Passive") {
         b_expect = {0, -1, 0};
         b_actual = toRotationMatrix(sequence, angles, {Order::EXTRINSIC, Direction::PASSIVE}) * a;
         CHECK(approxEq(b_actual, b_expect));
       }
     }
 
-    SECTION("zyx") {
+    SUBCASE("zyx") {
       const auto sequence = "zyx";
 
-      SECTION("Active") {
+      SUBCASE("Active") {
         b_expect = {0, 0, 1};
         b_actual = toRotationMatrix(sequence, angles, {Order::EXTRINSIC, Direction::ACTIVE}) * a;
         CHECK(approxEq(b_actual, b_expect));
       }
 
-      SECTION("Passive") {
+      SUBCASE("Passive") {
         b_expect = {0, 0, 1};
         b_actual = toRotationMatrix(sequence, angles, {Order::EXTRINSIC, Direction::PASSIVE}) * a;
         CHECK(approxEq(b_actual, b_expect));
       }
     }
 
-    SECTION("xzy") {
+    SUBCASE("xzy") {
       const auto sequence = "xzy";
 
-      SECTION("Active") {
+      SUBCASE("Active") {
         b_expect = {0, 1, 0};
         b_actual = toRotationMatrix(sequence, angles, {Order::EXTRINSIC, Direction::ACTIVE}) * a;
         CHECK(approxEq(b_actual, b_expect));
       }
 
-      SECTION("Passive") {
+      SUBCASE("Passive") {
         b_expect = {0, 1, 0};
         b_actual = toRotationMatrix(sequence, angles, {Order::EXTRINSIC, Direction::PASSIVE}) * a;
         CHECK(approxEq(b_actual, b_expect));
       }
     }
 
-    SECTION("xyx") {
+    SUBCASE("xyx") {
       const auto sequence = "xyx";
 
-      SECTION("Active") {
+      SUBCASE("Active") {
         b_expect = {0, 1, 0};
         b_actual = toRotationMatrix(sequence, angles, {Order::EXTRINSIC, Direction::ACTIVE}) * a;
         CHECK(approxEq(b_actual, b_expect));
       }
 
-      SECTION("Passive") {
+      SUBCASE("Passive") {
         b_expect = {0, 1, 0};
         b_actual = toRotationMatrix(sequence, angles, {Order::EXTRINSIC, Direction::PASSIVE}) * a;
         CHECK(approxEq(b_actual, b_expect));
       }
     }
 
-    SECTION("zxz") {
+    SUBCASE("zxz") {
       const auto sequence = "zxz";
 
-      SECTION("Active") {
+      SUBCASE("Active") {
         b_expect = {0, 0, 1};
         b_actual = toRotationMatrix(sequence, angles, {Order::EXTRINSIC, Direction::ACTIVE}) * a;
         CHECK(approxEq(b_actual, b_expect));
       }
 
-      SECTION("Passive") {
+      SUBCASE("Passive") {
         b_expect = {0, 0, 1};
         b_actual = toRotationMatrix(sequence, angles, {Order::EXTRINSIC, Direction::PASSIVE}) * a;
         CHECK(approxEq(b_actual, b_expect));
       }
     }
 
-    SECTION("yzy") {
+    SUBCASE("yzy") {
       const auto sequence = "yzy";
 
-      SECTION("Active") {
+      SUBCASE("Active") {
         b_expect = {-1, 0, 0};
         b_actual = toRotationMatrix(sequence, angles, {Order::EXTRINSIC, Direction::ACTIVE}) * a;
         CHECK(approxEq(b_actual, b_expect));
       }
 
-      SECTION("Passive") {
+      SUBCASE("Passive") {
         b_expect = {-1, 0, 0};
         b_actual = toRotationMatrix(sequence, angles, {Order::EXTRINSIC, Direction::PASSIVE}) * a;
         CHECK(approxEq(b_actual, b_expect));
@@ -377,7 +378,7 @@ TEST_CASE("Rotations of 90 degrees about each axis") {
 }
 
 TEST_CASE("General rotations") {
-  SECTION("Intrinsic") {
+  SUBCASE("Intrinsic") {
     std::array<double, 3> angles = {11 * M_PI / 180, -38 * M_PI / 180, 4 * M_PI / 180};
 
     RotationMatrix R_expect;
@@ -402,7 +403,7 @@ TEST_CASE("General rotations") {
     CHECK(approxEq(R_actual, R_expect));
   }
 
-  SECTION("Extrinsic") {
+  SUBCASE("Extrinsic") {
     std::array<double, 3> angles = {11 * M_PI / 180, -38 * M_PI / 180, 4 * M_PI / 180};
 
     RotationMatrix R_expect;
